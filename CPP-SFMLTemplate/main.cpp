@@ -186,6 +186,20 @@ bool checkGameLost(int gameGrid[40][40], int linesNo, int columnsNo)
 
 }
 
+bool checkGameWon(int gameGrid[40][40], int linesNo, int columnsNo)
+{
+	bool won = true;
+	int i = 0;
+	while(won && i<columnsNo) {
+		if (gameGrid[linesNo - 1][i] != 0) {
+			won = false;
+		}
+		i++;
+	}
+	return won;
+
+}
+
 void getSameBallsRangeColumn(int begin, int &end, int column, int gameGrid[40][40])
 {
 	bool exit = false;
@@ -422,7 +436,9 @@ int main()
 				drawCharacter(0, characterX, characterY);
 				drawPointers(characterX, characterY, ballsInHandNo, ballsInHandType, gameGrid, gameBallColors);
 				if(checkGameLost(gameGrid, levelLines, levelColumns)) {
-					//system("pause");
+					cout<<"Game Lost";
+				} else if(checkGameWon(gameGrid, levelLines, levelColumns)) {
+					cout<<"Game Won";
 				}
 			}
 		} else {
