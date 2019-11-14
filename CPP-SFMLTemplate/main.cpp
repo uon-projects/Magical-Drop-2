@@ -299,7 +299,6 @@ int main()
 	sf::Sprite backgroundSprite(zfSFML.loadSpriteFromTexture("Assets/", "background", "png"));
 	sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
 	sf::Sprite zeoFlowSprite(zfSFML.loadSpriteFromTexture("Assets/", "zeoflow_logo", "png"));
-	
 
 	backgroundSprite = zfSFML.formatSpriteForBackground(backgroundSprite);
 
@@ -394,7 +393,7 @@ int main()
 			window.draw(backgroundSprite);
 			if (!gameGridGenerated) {
 				gameGridGenerated = true;
-				levelColumns = 9;
+				levelColumns = 7;
 				levelLines = 12;
 				generateGameGrid(1, gameGrid, levelLines, levelColumns);
 				generateGameBallColors(gameBallColors, 10);
