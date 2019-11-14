@@ -365,8 +365,6 @@ int main()
 					//down
 					getBalls(ballsInHandType, ballsInHandNo, gameGrid, characterY, levelLines);
 				}
-			} else if(event.type == sf::Event::MouseButtonPressed) {
-				cout<<sf::Mouse::getPosition().x<<' '<<sf::Mouse::getPosition().y<<'\n';
 			}
 		}
 
