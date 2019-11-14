@@ -190,11 +190,15 @@ bool checkGameWon(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 	bool won = true;
 	int i = 0;
-	while(won && i<columnsNo) {
-		if (gameGrid[linesNo - 1][i] != 0) {
-			won = false;
+	int j = 0;
+	while(won && j<linesNo) {
+		while(won && i<columnsNo) {
+			if (gameGrid[j][i] != 0) {
+				won = false;
+			}
+			i++;
 		}
-		i++;
+		j++;
 	}
 	return won;
 
@@ -437,7 +441,7 @@ int main()
 				drawPointers(characterX, characterY, ballsInHandNo, ballsInHandType, gameGrid, gameBallColors);
 				if(checkGameLost(gameGrid, levelLines, levelColumns)) {
 					cout<<"Game Lost";
-				} else if(checkGameWon(gameGrid, levelLines, levelColumns)) {
+				} else if(checkGameWon(gameGrid, levelLines, levelColumns) && gameGridGenerated) {
 					cout<<"Game Won";
 				}
 			}
