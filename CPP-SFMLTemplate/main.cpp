@@ -314,6 +314,8 @@ void checkCanRemoveBalls(int gameGrid[40][40], int linesNo, int columnsNo, int c
 
 int main()
 {
+	window.setFramerateLimit(60);
+
 	sf::Sprite backgroundSprite(zfSFML.loadSpriteFromTexture("Assets/", "background", "png"));
 	sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
 	sf::Sprite zeoFlowSprite(zfSFML.loadSpriteFromTexture("Assets/", "zeoflow_logo", "png"));
