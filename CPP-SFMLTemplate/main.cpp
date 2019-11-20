@@ -372,7 +372,7 @@ int main()
 					int noBalls = ballsInHandNo;
 					throwBalls(ballsInHandType, ballsInHandNo, gameGrid, characterY, levelLines);
 					if (noBalls != 0) {
-						checkCanRemoveBalls(gameGrid, levelLines, levelColumns, characterY);
+						//checkCanRemoveBalls(gameGrid, levelLines, levelColumns, characterY);
 					}
 				}
 				if (event.key.code == 74)
