@@ -9,6 +9,7 @@ using namespace zeoFlow;
 
 sf::RenderWindow window(sf::VideoMode(800, 500), "Magical Drop 2");
 ZeoFlow_SFML zfSFML;
+bool ballsStreak;
 
 void generateGameGrid(int level, int gameGrid[40][40], int linesNo, int columnsNo)
 {
@@ -146,6 +147,10 @@ void throwBalls(int &type, int &ballsNo, int gameGrid[40][40], int characterY, i
 				ballsNo = 0;
 			}
 		}
+		if(ballsStreak) {
+			type = 0;
+			ballsNo = 0;
+		}
 	}
 }
 
@@ -261,6 +266,7 @@ void removeSameBallRow(int gameGrid[40][40], int line, int columnsNo, int linesN
 	while(i<columnsNo && !rightExit) {
 		if(gameGrid[line][i] == type) {
 			gameGrid[line][i] = 0;
+			removeSameBallColumn(gameGrid, line, i, characterY, type, linesNo);
 			i++;
 		} else {
 			rightExit = true;
@@ -297,7 +303,7 @@ void checkCanRemoveBalls(int gameGrid[40][40], int linesNo, int columnsNo, int c
 	int type = gameGrid[begin][characterY];
 	getSameBallsRangeColumn(begin, end, characterY, gameGrid);
 	int noBalls = begin - end;
-	if (noBalls >= 3) {
+	if (noBalls >= 3 || ballsStreak) {
 		i = begin;
 		for(i; i>end; i--) {
 			gameGrid[i][characterY] = 0;
@@ -370,9 +376,10 @@ int main()
 				{
 					//up
 					int noBalls = ballsInHandNo;
+					ballsStreak = ballsInHandNo >=3;
 					throwBalls(ballsInHandType, ballsInHandNo, gameGrid, characterY, levelLines);
 					if (noBalls != 0) {
-						//checkCanRemoveBalls(gameGrid, levelLines, levelColumns, characterY);
+						checkCanRemoveBalls(gameGrid, levelLines, levelColumns, characterY);
 					}
 				}
 				if (event.key.code == 74)
