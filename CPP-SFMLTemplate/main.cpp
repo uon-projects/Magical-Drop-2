@@ -188,17 +188,13 @@ bool checkGameLost(int gameGrid[40][40], int linesNo, int columnsNo)
 
 bool checkGameWon(int gameGrid[40][40], int linesNo, int columnsNo)
 {
-	bool won = true;
+	bool won = false;
 	int i = 0;
-	int j = 0;
-	while(won && j<linesNo) {
-		while(won && i<columnsNo) {
-			if (gameGrid[j][i] != 0) {
-				won = false;
-			}
-			i++;
+	while(!won && i<columnsNo) {
+		if (gameGrid[0][i] == 0) {
+			won = true;
 		}
-		j++;
+		i++;
 	}
 	return won;
 
