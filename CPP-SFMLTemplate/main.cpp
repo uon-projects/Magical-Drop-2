@@ -446,9 +446,9 @@ int main()
 				drawPointers(characterX, characterY, ballsInHandNo, ballsInHandType, gameGrid, gameBallColors);
 				if(checkGameLost(gameGrid, levelLines, levelColumns)) {
 					cout<<"Game Lost";
-				} else if(checkGameWon(gameGrid, levelLines, levelColumns) && gameGridGenerated) {
+				}/* else if(checkGameWon(gameGrid, levelLines, levelColumns) && gameGridGenerated) {
 					cout<<"Game Won";
-				}
+				}*/
 			}
 		} else {
 			window.draw(backgroundSprite);
