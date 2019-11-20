@@ -149,7 +149,7 @@ void throwBalls(int &type, int &ballsNo, int gameGrid[40][40], int characterY, i
 		}
 		if(ballsStreak) {
 			type = 0;
-			//ballsNo = 0;
+			ballsNo = 0;
 		}
 	}
 }
