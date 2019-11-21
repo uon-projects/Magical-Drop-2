@@ -436,7 +436,7 @@ int main()
 				for(int i=0; i<levelLines; i++) {
 					for(int j=0; j<levelColumns; j++) {
 						if(gameGrid[i][j] != 0) {
-							ballSprite.setColor(gameBallColors[gameGrid[i][j]]);
+							//ballSprite.setColor(gameBallColors[gameGrid[i][j]]);
 							ballSprite.setPosition(40*j + 220, 40*i);
 							window.draw(ballSprite);
 						}
