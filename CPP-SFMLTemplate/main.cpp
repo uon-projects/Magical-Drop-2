@@ -79,12 +79,16 @@ void generateGameBallColors(sf::Color ballColors[10], int colors)
 
 }
 
+int characterAnimation = 0;
+sf::Sprite characterBoy[15];
 void drawCharacter(int type, int characterX, int characterY)
 {
-	sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
-	ballSprite.setColor(sf::Color(247, 36, 36));
-	ballSprite.setPosition(40*characterY + 220, 40*characterX);
-	window.draw(ballSprite);
+	characterBoy[characterAnimation].setPosition(40*characterY + 220, 40*characterX);
+	characterBoy[characterAnimation].setOrigin(20, 248);
+	characterBoy[characterAnimation].setScale(0.2, 0.2);
+	window.draw(characterBoy[characterAnimation]);
+	characterAnimation++;
+	if(characterAnimation == 7) characterAnimation = 0;
 }
 
 void drawPointers(int characterX, int characterY, int ballsInHandNo, int ballsInHandType, int gameGrid[40][40], sf::Color gameBallColors[10])
@@ -118,11 +122,40 @@ void drawPointers(int characterX, int characterY, int ballsInHandNo, int ballsIn
 	}
 	for(i; i>=0; i--) {
 		if (gameGrid[i][characterY] == 0) {
-			pointerSprite.setColor(sf::Color(247, 36, 36));
 			pointerSprite.setPosition(40*characterY + 220, 40*i);
 			window.draw(pointerSprite);
 		}
 	}
+}
+
+int getBallX(int gameGrid[40][40], int characterY, int gameLines)
+{
+	int i = gameLines - 1;
+	bool found = false;
+	while(i>=1 && !found) {
+		if(gameGrid[i - 1][characterY] != 0) {
+			found = true;
+		}
+		i--;
+	}
+	return i;
+}
+
+int getSameBalls(int gameGrid[40][40], int ballY, int ballX)
+{
+	int i = ballX;
+	int ballsNo = 1;
+	int ballType = gameGrid[i][ballY];
+	bool stop = false;
+	while(i>=0 && !stop) {
+		if(gameGrid[i - 1][ballY] == ballType) {
+			ballsNo++;
+			i--;
+		} else {
+			stop = true;
+		}
+	}
+	return ballsNo;
 }
 
 void throwBalls(int &type, int &ballsNo, int gameGrid[40][40], int characterY, int gameLines)
@@ -205,76 +238,6 @@ bool checkGameWon(int gameGrid[40][40], int linesNo, int columnsNo)
 
 }
 
-void getSameBallsRangeColumn(int begin, int &end, int column, int gameGrid[40][40])
-{
-	bool exit = false;
-	int i = begin;
-	int type = gameGrid[begin][column];
-	while(i>=0 && !exit) {
-		if(gameGrid[i][column] == type) {
-			i--;
-		} else {
-			exit = true;
-		}
-	}
-	end = i;
-}
-
-void removeSameBallRow(int gameGrid[40][40], int line, int columnsNo, int linesNo, int characterY, int type);
-
-void removeSameBallColumn(int gameGrid[40][40], int line, int columnsNo, int characterY, int type, int linesNo)
-{
-	bool topExit = false;
-	int i = line - 1;
-	while(i>=0 && !topExit) {
-		if(gameGrid[i][columnsNo] == type) {
-			gameGrid[i][columnsNo] = 0;
-			removeSameBallRow(gameGrid, i, columnsNo, linesNo, characterY, type);
-			i--;
-		} else {
-			topExit = true;
-		}
-	}
-	bool bottomExit = false;
-	i = line + 1;
-	while(i<linesNo && !bottomExit) {
-		if(gameGrid[i][columnsNo] == type) {
-			gameGrid[i][columnsNo] = 0;
-			removeSameBallRow(gameGrid, i, columnsNo, linesNo, characterY, type);
-			i++;
-		} else {
-			bottomExit = true;
-		}
-	}
-}
-
-void removeSameBallRow(int gameGrid[40][40], int line, int columnsNo, int linesNo, int characterY, int type)
-{
-	bool leftExit = false;
-	int i = characterY - 1;
-	while(i>=0 && !leftExit) {
-		if(gameGrid[line][i] == type) {
-			gameGrid[line][i] = 0;
-			removeSameBallColumn(gameGrid, line, i, characterY, type, linesNo);
-			i--;
-		} else {
-			leftExit = true;
-		}
-	}
-	bool rightExit = false;
-	i = characterY + 1;
-	while(i<columnsNo && !rightExit) {
-		if(gameGrid[line][i] == type) {
-			gameGrid[line][i] = 0;
-			removeSameBallColumn(gameGrid, line, i, characterY, type, linesNo);
-			i++;
-		} else {
-			rightExit = true;
-		}
-	}
-
-}
-
 void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 	for(int i = 0; i<columnsNo; i++) {
@@ -288,29 +251,95 @@ void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 	}
 }
 
-void checkCanRemoveBalls(int gameGrid[40][40], int linesNo, int columnsNo, int characterY)
+void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
+void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
+void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
+void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
+
+void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
+{
+	if(ballX > 0) {
+		ballX -= 1;
+		int cBallType = gameGrid[ballX][ballY];
+		if(cBallType == ballType) {
+			gameGrid[ballX][ballY] = ballType * -1;
+			checkBallTop(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+			checkBallLeft(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+			checkBallRight(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+		}
+	}
+}
+
+void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
+{
+	if(ballX < linesNo - 1) {
+		ballX += 1;
+		int cBallType = gameGrid[ballX][ballY];
+		if(cBallType == ballType) {
+			gameGrid[ballX][ballY] = ballType * -1;
+			checkBallBottom(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+			checkBallLeft(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+			checkBallRight(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+		}
+	}
+}
+
+void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
+{
+	if(ballY > 0) {
+		ballY -= 1;
+		int cBallType = gameGrid[ballX][ballY];
+		if(cBallType == ballType) {
+			gameGrid[ballX][ballY] = ballType * -1;
+			checkBallBottom(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+			checkBallTop(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+			checkBallLeft(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+		}
+	}
+}
+
+void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
+{
+	if(ballY < columnsNo - 1) {
+		ballY += 1;
+		int cBallType = gameGrid[ballX][ballY];
+		if(cBallType == ballType) {
+			gameGrid[ballX][ballY] = ballType * -1;
+			checkBallBottom(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+			checkBallTop(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+			checkBallRight(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+		}
+	}
+}
+
+int lvlScore = 0;
+void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballType)
+{
+	int score = 0;
+	for(int i = 0; i<linesNo; i++) {
+		for(int j=0; j<columnsNo; j++) {
+			if(gameGrid[i][j] * -1 == ballType) {
+				gameGrid[i][j] = 0;
+				score++;
+			}
+		}
+	}
+	lvlScore += score*40;
+}
+
+void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX)
 {
 
-	int i = linesNo - 1;
-	bool found = false;
-	while(i>=1 && !found) {
-		if(gameGrid[i - 1][characterY] != 0) {
-			found = true;
-		}
-		i--;
+	int ballType = gameGrid[ballX][ballY];
+	if(getSameBalls(gameGrid, ballY, ballX) >= 3) {
+		gameGrid[ballX][ballY] = ballType * -1;
+		checkBallTop(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+		checkBallLeft(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+		checkBallRight(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+		removeAllBalls(gameGrid, linesNo, columnsNo, ballType);
+		checkEmptySpaces(gameGrid, linesNo, columnsNo);
+		cout<<"score: "<<lvlScore<<'\n';
 	}
-	int begin = i, end;
-	int type = gameGrid[begin][characterY];
-	getSameBallsRangeColumn(begin, end, characterY, gameGrid);
-	int noBalls = begin - end;
-	if (noBalls >= 3 || ballsStreak) {
-		i = begin;
-		for(i; i>end; i--) {
-			gameGrid[i][characterY] = 0;
-			removeSameBallRow(gameGrid, i, columnsNo, linesNo, characterY, type);
-		}
-	}
-	checkEmptySpaces(gameGrid, linesNo, columnsNo);
 
 }
 
@@ -321,6 +350,12 @@ int main()
 	sf::Sprite backgroundSprite(zfSFML.loadSpriteFromTexture("Assets/", "background", "png"));
 	sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
 	sf::Sprite zeoFlowSprite(zfSFML.loadSpriteFromTexture("Assets/", "zeoflow_logo", "png"));
+
+	string boyCharacter = "idle_";
+	for(int i=0; i<15; i++) {
+		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/", boyCharacter + to_string(i + 1), "png"));
+		characterBoy[i] = characterIdle;
+	}
 
 	backgroundSprite = zfSFML.formatSpriteForBackground(backgroundSprite);
 
@@ -358,8 +393,6 @@ int main()
 					} else {
 						characterY = levelColumns - 1;
 					}
-					drawCharacter(0, characterX, characterY);
-					drawPointers(characterX, characterY, ballsInHandNo, ballsInHandType, gameGrid, gameBallColors);
 				}
 				if (event.key.code == 72)
 				{
@@ -369,8 +402,6 @@ int main()
 					} else {
 						characterY = 0;
 					}
-					drawCharacter(0, characterX, characterY);
-					drawPointers(characterX, characterY, ballsInHandNo, ballsInHandType, gameGrid, gameBallColors);
 				}
 				if (event.key.code == 73)
 				{
@@ -378,9 +409,8 @@ int main()
 					int noBalls = ballsInHandNo;
 					ballsStreak = ballsInHandNo >=3;
 					throwBalls(ballsInHandType, ballsInHandNo, gameGrid, characterY, levelLines);
-					if (noBalls != 0) {
-						checkCanRemoveBalls(gameGrid, levelLines, levelColumns, characterY);
-					}
+					int ballX = getBallX(gameGrid, characterY, levelLines);
+					markBalls(gameGrid, levelLines, levelColumns, characterY, ballX);
 				}
 				if (event.key.code == 74)
 				{
@@ -425,10 +455,22 @@ int main()
 				clock.restart();
 			} else {
 				int sec = (int) clock.getElapsedTime().asSeconds();
-				if(sec % 10 == 5 && !rowGenerated) {
+				int rangeSec;
+				if(lvlScore < 2500) {
+					rangeSec = 9;
+				} else if(lvlScore < 4500) {
+					rangeSec = 8;
+				} else if(lvlScore < 6500) {
+					rangeSec = 7;
+				} else if(lvlScore < 8500) {
+					rangeSec = 6;
+				} else {
+					rangeSec = 5;
+				}
+				if(sec % rangeSec == 4 && !rowGenerated) {
 					addRow(1, gameGrid, levelLines, levelColumns);
 					rowGenerated = true;
-				} else if (sec % 10 == 9) {
+				} else if (sec % rangeSec == rangeSec - 1) {
 					clock.restart();
 					rowGenerated = false;
 				}
@@ -436,14 +478,15 @@ int main()
 				for(int i=0; i<levelLines; i++) {
 					for(int j=0; j<levelColumns; j++) {
 						if(gameGrid[i][j] != 0) {
-							ballSprite.setColor(gameBallColors[gameGrid[i][j]]);
+							int ballType = gameGrid[i][j];
+							ballSprite.setColor(gameBallColors[ballType]);
 							ballSprite.setPosition(40*j + 220, 40*i);
 							window.draw(ballSprite);
 						}
 					}
 				}
-				drawCharacter(0, characterX, characterY);
 				drawPointers(characterX, characterY, ballsInHandNo, ballsInHandType, gameGrid, gameBallColors);
+				drawCharacter(0, characterX, characterY);
 				if(checkGameLost(gameGrid, levelLines, levelColumns)) {
 					cout<<"Game Lost";
 				}/* else if(checkGameWon(gameGrid, levelLines, levelColumns) && gameGridGenerated) {
