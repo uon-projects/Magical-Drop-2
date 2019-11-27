@@ -9,7 +9,8 @@ using namespace zeoFlow;
 
 sf::RenderWindow window(sf::VideoMode(800, 500), "Magical Drop 2");
 ZeoFlow_SFML zfSFML;
-bool ballsStreak;
+bool ballsStreak, gameLost;
+int ballsInHandNo = 0, ballsInHandType = 0;
 
 void generateGameGrid(int level, int gameGrid[40][40], int linesNo, int columnsNo)
 {
@@ -79,50 +80,53 @@ void generateGameBallColors(sf::Color ballColors[10], int colors)
 
 }
 
+const int objectSize = 35;
 int characterAnimation = 0;
 sf::Sprite characterBoy[15];
-void drawCharacter(int type, int characterX, int characterY)
+void drawCharacter(int type, int characterX, int characterY, int ballsInHandNo, int ballsInHandType, sf::Color gameBallColors[10])
 {
-	characterBoy[characterAnimation].setPosition(40*characterY + 220, 40*characterX);
-	characterBoy[characterAnimation].setOrigin(20, 248);
+	characterBoy[characterAnimation].setPosition(objectSize*characterY + 120, 40*characterX);
+	characterBoy[characterAnimation].setOrigin(30, 430);
 	characterBoy[characterAnimation].setScale(0.2, 0.2);
 	window.draw(characterBoy[characterAnimation]);
 	characterAnimation++;
 	if(characterAnimation == 7) characterAnimation = 0;
-}
 
-void drawPointers(int characterX, int characterY, int ballsInHandNo, int ballsInHandType, int gameGrid[40][40], sf::Color gameBallColors[10])
-{
-	sf::Sprite pointerSprite(zfSFML.loadSpriteFromTexture("Assets/", "pointer", "png"));
-	sf::Sprite handPointerSprite(zfSFML.loadSpriteFromTexture("Assets/", "hand_pointer", "png"));
+	int i;
 	sf::Sprite inHandBallSprite(zfSFML.loadSpriteFromTexture("Assets/", "hand_1ball", "png"));
 	sf::Sprite inHandBalls2Sprite(zfSFML.loadSpriteFromTexture("Assets/", "hand_2balls", "png"));
 	sf::Sprite inHandBalls3Sprite(zfSFML.loadSpriteFromTexture("Assets/", "hand_3balls", "png"));
+	sf::Sprite handPointerSprite(zfSFML.loadSpriteFromTexture("Assets/", "hand_pointer", "png"));
 
-	int i;
 	if (ballsInHandNo == 0) {
 		i = characterX - 1;
 	} else {
 		i = characterX - 2;
-		handPointerSprite.setPosition(40*characterY + 220, 40*(i + 1));	
+		handPointerSprite.setPosition(objectSize*characterY + 120, 40*(i + 1));	
 		window.draw(handPointerSprite);
 		if (ballsInHandNo == 1) {
-			inHandBallSprite.setPosition(40*characterY + 220, 40*(i + 1));
+			inHandBallSprite.setPosition(objectSize*characterY + 120, 40*(i + 1));
 			inHandBallSprite.setColor(gameBallColors[ballsInHandType]);
 			window.draw(inHandBallSprite);
 		} else if (ballsInHandNo == 2) {
-			inHandBalls2Sprite.setPosition(40*characterY + 220, 40*(i + 1));
+			inHandBalls2Sprite.setPosition(objectSize*characterY + 120, 40*(i + 1));
 			inHandBalls2Sprite.setColor(gameBallColors[ballsInHandType]);
 			window.draw(inHandBalls2Sprite);
 		} else if (ballsInHandNo >= 3) {
-			inHandBalls3Sprite.setPosition(40*characterY + 220, 40*(i + 1));
+			inHandBalls3Sprite.setPosition(objectSize*characterY + 120, 40*(i + 1));
 			inHandBalls3Sprite.setColor(gameBallColors[ballsInHandType]);
 			window.draw(inHandBalls3Sprite);
 		}
 	}
-	for(i; i>=0; i--) {
+}
+
+void drawPointers(int characterX, int characterY, int gameGrid[40][40])
+{
+	sf::Sprite pointerSprite(zfSFML.loadSpriteFromTexture("Assets/", "pointer", "png"));
+
+	for(int i = characterX - 1; i>=0; i--) {
 		if (gameGrid[i][characterY] == 0) {
-			pointerSprite.setPosition(40*characterY + 220, 40*i);
+			pointerSprite.setPosition(objectSize*characterY + 120, 40*i);
 			window.draw(pointerSprite);
 		}
 	}
@@ -130,7 +134,7 @@ void drawPointers(int characterX, int characterY, int ballsInHandNo, int ballsIn
 
 int getBallX(int gameGrid[40][40], int characterY, int gameLines)
 {
-	int i = gameLines - 1;
+	int i = gameLines;
 	bool found = false;
 	while(i>=1 && !found) {
 		if(gameGrid[i - 1][characterY] != 0) {
@@ -327,11 +331,11 @@ void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballTy
 	lvlScore += score*40;
 }
 
-void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX)
+void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak)
 {
 
 	int ballType = gameGrid[ballX][ballY];
-	if(getSameBalls(gameGrid, ballY, ballX) >= 3) {
+	if(getSameBalls(gameGrid, ballY, ballX) >= 3 || ballsStreak >= 3) {
 		gameGrid[ballX][ballY] = ballType * -1;
 		checkBallTop(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
 		checkBallLeft(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
@@ -345,11 +349,12 @@ void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int 
 
 int main()
 {
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(30);
 
 	sf::Sprite backgroundSprite(zfSFML.loadSpriteFromTexture("Assets/", "background", "png"));
 	sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
 	sf::Sprite zeoFlowSprite(zfSFML.loadSpriteFromTexture("Assets/", "zeoflow_logo", "png"));
+	sf::Sprite portal(zfSFML.loadSpriteFromTexture("Assets/", "portal", "png"));
 
 	string boyCharacter = "idle_";
 	for(int i=0; i<15; i++) {
@@ -373,7 +378,6 @@ int main()
 	
 	int characterX, characterY;
 	int levelLines, levelColumns;
-	int ballsInHandNo = 0, ballsInHandType = 0;
 	bool rowGenerated = false;
 
     while (window.isOpen())
@@ -384,7 +388,7 @@ int main()
 			if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape)
 			{
                 window.close();
-			} else if(event.type == sf::Event::KeyPressed) {
+			} else if(event.type == sf::Event::KeyPressed && !gameLost) {
 				if (event.key.code == 71)
 				{
 					//left
@@ -410,7 +414,7 @@ int main()
 					ballsStreak = ballsInHandNo >=3;
 					throwBalls(ballsInHandType, ballsInHandNo, gameGrid, characterY, levelLines);
 					int ballX = getBallX(gameGrid, characterY, levelLines);
-					markBalls(gameGrid, levelLines, levelColumns, characterY, ballX);
+					markBalls(gameGrid, levelLines, levelColumns, characterY, ballX, ballsStreak);
 				}
 				if (event.key.code == 74)
 				{
@@ -446,10 +450,11 @@ int main()
 			window.draw(backgroundSprite);
 			if (!gameGridGenerated) {
 				gameGridGenerated = true;
-				levelColumns = 7;
+				levelColumns = 15;
 				levelLines = 12;
 				generateGameGrid(1, gameGrid, levelLines, levelColumns);
 				generateGameBallColors(gameBallColors, 10);
+				gameLost = false;
 				characterX = levelLines - 1;
 				characterY = levelColumns/2;
 				clock.restart();
@@ -468,35 +473,51 @@ int main()
 					rangeSec = 5;
 				}
 				if(sec % rangeSec == 4 && !rowGenerated) {
-					addRow(1, gameGrid, levelLines, levelColumns);
+					if(!gameLost) {
+						addRow(1, gameGrid, levelLines, levelColumns);
+					}
 					rowGenerated = true;
 				} else if (sec % rangeSec == rangeSec - 1) {
 					clock.restart();
 					rowGenerated = false;
 				}
+				sf::RectangleShape rectangle;
+				rectangle.setSize(sf::Vector2f(objectSize * levelColumns + 3, objectSize * levelLines + 3));
+				rectangle.setOutlineColor(sf::Color(43, 43, 43, 255));
+				//rectangle.setFillColor(sf::Color(43, 43, 43, 70));
+				rectangle.setFillColor(sf::Color(135, 43, 240, 70));
+				rectangle.setOutlineThickness(10);
+				rectangle.setPosition(121, 11);
+				window.draw(rectangle);
 				//draw game pieces
 				for(int i=0; i<levelLines; i++) {
 					for(int j=0; j<levelColumns; j++) {
 						if(gameGrid[i][j] != 0) {
 							int ballType = gameGrid[i][j];
 							ballSprite.setColor(gameBallColors[ballType]);
-							ballSprite.setPosition(40*j + 220, 40*i);
+							ballSprite.setPosition(objectSize*j + 120, objectSize*i + 10);
 							window.draw(ballSprite);
 						}
 					}
 				}
-				drawPointers(characterX, characterY, ballsInHandNo, ballsInHandType, gameGrid, gameBallColors);
-				drawCharacter(0, characterX, characterY);
-				if(checkGameLost(gameGrid, levelLines, levelColumns)) {
+				drawPointers(characterX, characterY, gameGrid);
+				drawCharacter(0, characterX, characterY, ballsInHandNo, ballsInHandType, gameBallColors);
+				if(checkGameLost(gameGrid, levelLines, levelColumns) && !gameLost) {
 					cout<<"Game Lost";
+					gameLost = true;
 				}/* else if(checkGameWon(gameGrid, levelLines, levelColumns) && gameGridGenerated) {
 					cout<<"Game Won";
 				}*/
+				portal.setScale(0.2, 0.2);
+				portal.setPosition(objectSize*-2 + 120, objectSize*(characterX - 1));
+				window.draw(portal);
+				portal.setScale(0.2, 0.2);
+				portal.setPosition(objectSize*levelColumns + 133, objectSize*(characterX - 1));
+				window.draw(portal);
 			}
 		} else {
 			window.draw(backgroundSprite);
 		}
-		
         window.display();
 	}
 
