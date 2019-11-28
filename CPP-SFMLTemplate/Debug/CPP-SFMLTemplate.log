@@ -1,4 +1,4 @@
-﻿Build started 28/11/2019 18:26:27.
+﻿Build started 28/11/2019 18:59:29.
      1>Project "C:\Users\grigo\Desktop\BSc Games Programming\Year 1\Magical-Drop-2\CPP-SFMLTemplate\CPP-SFMLTemplate.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\SFML v2.4.0 (Win32 - Visual Studio 2012)\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
@@ -82,66 +82,67 @@
      1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(839): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
      1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(844): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
      1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(848): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(875): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(875): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(883): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(890): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(897): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(922): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(927): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(930): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(930): warning C4244: 'argument' : conversion from 'const float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1006): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1018): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1035): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1040): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1043): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1043): warning C4244: 'argument' : conversion from 'const float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1062): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1063): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1064): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1065): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1066): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1074): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1081): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1082): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1083): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1084): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1085): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1093): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(880): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(880): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(888): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(895): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(902): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(921): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(948): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(953): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(956): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(956): warning C4244: 'argument' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1032): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1044): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1061): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1066): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1069): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1069): warning C4244: 'argument' : conversion from 'const float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1088): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1089): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1090): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1091): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1092): warning C4305: 'argument' : truncation from 'double' to 'float'
      1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1100): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1101): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1102): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1103): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1104): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1112): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1107): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1108): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1109): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1110): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1111): warning C4305: 'argument' : truncation from 'double' to 'float'
      1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1119): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1120): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1121): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1122): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1123): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1131): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1126): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1127): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1128): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1129): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1130): warning C4305: 'argument' : truncation from 'double' to 'float'
      1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1138): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1139): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1140): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1141): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1142): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1150): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1179): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1263): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1341): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1422): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1423): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1431): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1431): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1462): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1463): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1463): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1465): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1466): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1466): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1471): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1477): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1145): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1146): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1147): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1148): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1149): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1157): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1164): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1165): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1166): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1167): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1168): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1176): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1204): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1297): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1370): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1455): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1456): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1464): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1464): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1495): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1496): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1496): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1498): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1499): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1499): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1504): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\grigo\desktop\bsc games programming\year 1\magical-drop-2\cpp-sfmltemplate\main.cpp(1510): warning C4244: 'argument' : conversion from 'unsigned int' to 'float', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\grigo\Desktop\BSc Games Programming\Year 1\Magical-Drop-2\Debug\CPP-SFMLTemplate.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\SFML v2.4.0 (Win32 - Visual Studio 2012)\lib" "sfml-system-d.lib" "sfml-graphics-d.lib" "sfml-audio-d.lib" "sfml-network-d.lib" "sfml-window-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\grigo\Desktop\BSc Games Programming\Year 1\Magical-Drop-2\Debug\CPP-SFMLTemplate.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\grigo\Desktop\BSc Games Programming\Year 1\Magical-Drop-2\Debug\CPP-SFMLTemplate.lib" /MACHINE:X86 Debug\main.obj
          CPP-SFMLTemplate.vcxproj -> C:\Users\grigo\Desktop\BSc Games Programming\Year 1\Magical-Drop-2\Debug\CPP-SFMLTemplate.exe
@@ -149,4 +150,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:06.86
+Time Elapsed 00:00:08.28

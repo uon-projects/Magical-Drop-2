@@ -854,7 +854,8 @@ void hideInGameMenu()
 	}
 }
 
-sf::Color gameLostColors[8];
+sf::Color gameLostColors[8], gameWonColors[8];
+bool lvlTargetHit;
 void drawGameLost()
 {
 	auto mouse_pos = sf::Mouse::getPosition(window);
@@ -868,7 +869,11 @@ void drawGameLost()
 	}
 	sf::RectangleShape menuSqr;
 	menuSqr.setSize(sf::Vector2f(40, 40));
-	menuSqr.setFillColor(gameLostColors[gameLostLines]);
+	if(lvlTargetHit && lvlScore > finishLvlScore[gameLvl - 1]) {
+		menuSqr.setFillColor(gameWonColors[gameLostLines]);
+	} else {
+		menuSqr.setFillColor(gameLostColors[gameLostLines]);
+	}
 	for(int i = 0; i<levelLines; i++) {
 		for(int j = 0; j<levelColumns; j++) {
 			if(i < gameLostLines || i >= levelLines - gameLostLines) {
@@ -893,7 +898,7 @@ void drawGameLost()
 		scoreTitle.setOrigin(scoreTitle.getGlobalBounds().width/2, 0);
 		window.draw(scoreTitle);
 
-		inGameExit.setString("EXIT");
+		inGameExit.setString("RETURN HOME");
 		inGameExit.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 240);
 		inGameExit.setCharacterSize(26);
 		if(inGameExit.getGlobalBounds().contains(translated_pos)) {
@@ -910,6 +915,27 @@ void drawGameLost()
 		}
 		inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
 		window.draw(inGameExit);
+
+		if(gameLvl<lvlUnlocked && gameLvl <=6) {
+			inGameExit.setString("NEXT LEVEL");
+			inGameExit.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 270);
+			inGameExit.setCharacterSize(26);
+			if(inGameExit.getGlobalBounds().contains(translated_pos)) {
+				inGameExit.setFillColor(sf::Color(255, 255, 255));
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					clockRefreshRate.restart();
+					gameGridGenerated = false;
+					showMenu = false;
+					menuSquares = 0;
+					gameLvl++;
+					currentScreen = SCENE_GAME_SCREEN;
+				}
+			} else {
+				inGameExit.setFillColor(sf::Color(198, 198, 198));
+			}
+			inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
+			window.draw(inGameExit);
+		}
 	}
 }
 
@@ -1160,7 +1186,6 @@ void drawOptionsScreen()
 int main()
 {
 	int rangeSec;
-	bool lvlTargetHit;
 	sf::Image icon;
 	icon.loadFromFile("Assets/zeoflow_logo.png");
 	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
@@ -1199,6 +1224,15 @@ int main()
 	gameLostColors[5] = sf::Color(114, 22, 3);
 	gameLostColors[6] = sf::Color(66, 13, 2);
 	gameLostColors[7] = sf::Color(43, 43, 43);
+
+	gameWonColors[0] = sf::Color(139, 195, 74);
+	gameWonColors[1] = sf::Color(112, 169, 46);
+	gameWonColors[2] = sf::Color(87, 142, 24);
+	gameWonColors[3] = sf::Color(67, 106, 21);
+	gameWonColors[4] = sf::Color(56, 95, 10);
+	gameWonColors[5] = sf::Color(47, 74, 15);
+	gameWonColors[6] = sf::Color(50, 70, 27);
+	gameWonColors[7] = sf::Color(43, 43, 43);
 
 	sf::RectangleShape gameHolder;
 	gameHolder.setOutlineThickness(10);
@@ -1279,13 +1313,8 @@ int main()
 					if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
 						currentScreen = SCENE_SELECT_LVL;
 						clockRefreshRate.restart();
-					} else if(sf::Keyboard::isKeyPressed(sf::Keyboard::O)) {
+					} else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
 						currentScreen = SCENE_OPTIONS_SCREEN;
-						clockRefreshRate.restart();
-					}
-				} else if(currentScreen == SCENE_OPTIONS_SCREEN) {
-					if(sf::Keyboard::isKeyPressed(sf::Keyboard::B)) {
-						currentScreen = SCENE_GAME_MENU_SCREEN;
 						clockRefreshRate.restart();
 					}
 				} else if(currentScreen == SCENE_GAME_SCREEN  && !gameLost) {	
@@ -1315,7 +1344,7 @@ int main()
 					} else if (event.key.code == 74 && !showMenu && menuSquares == 0) {
 						//down
 						getBalls(gameGrid, characterY, levelLines);
-					} else if(sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
+					} else if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
 						if(menuSquares == 0) {
 							menuSquares = 0;
 							showMenu = true;
@@ -1413,7 +1442,11 @@ int main()
 					rowGenerated = false;
 				}
 				if(gameLost)  {
-					gameHolder.setOutlineColor(gameLostColors[gameLostLines]);
+					if(lvlTargetHit && lvlScore > finishLvlScore[gameLvl - 1]) {
+						gameHolder.setOutlineColor(gameWonColors[gameLostLines]);
+					} else {
+						gameHolder.setOutlineColor(gameLostColors[gameLostLines]);
+					}
 					gameHolder.setFillColor(sf::Color(236, 35, 35, 70));
 				} else {
 					gameHolder.setOutlineColor(sf::Color(43, 43, 43, 255));
@@ -1444,14 +1477,14 @@ int main()
 					}
 				}
 				if(checkGameLost(gameGrid, levelLines, levelColumns) && !gameLost) {
-					if(lvlScore > finishLvlScore[gameLvl - 1]) {
+					if(lvlScore >= finishLvlScore[gameLvl - 1] && lvlUnlocked<=gameLvl) {
 						lvlUnlocked = gameLvl + 1;
 					}
 					gameLostLines = 0;
 					clockGameMenu.restart();
 					gameLost = true;
 				}
-				if(lvlScore > finishLvlScore[gameLvl - 1] && !lvlTargetHit) {
+				if(lvlScore >= finishLvlScore[gameLvl - 1] && !lvlTargetHit) {
 					lvlTargetHit = true;
 					inGameEvents.restart();
 					gameEvent = true;
