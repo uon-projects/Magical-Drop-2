@@ -16,10 +16,12 @@ const int SCENE_SELECT_LVL = 4;
 
 int finishLvlScore[6];
 int gameLvl;
+sf::Color gameBallColors[10];
 int lvlUnlocked = 1;
 sf::Text scoreText, scoreTitle, inGameOptions, inGameExit, inGameResume, exitTitle, exitAfirmative, exitNegative, exitContent, btnPlayTxt, btnCharacterTxt;
 sf::RenderWindow window(sf::VideoMode(800, 500), "Magical Drop 2");
-bool showMenu = false, gameGridGenerated = false;
+
+bool showMenu = false, gameGridGenerated = false, gridGeneratedEffectShow;
 ZeoFlow_SFML zfSFML;
 bool ballsStreak, gameLost;
 int ballsInHandNo = 0, ballsInHandType = 0;
@@ -34,7 +36,8 @@ int currentScreen = SCENE_SPLASH_SCREEN;
 
 int stateNinja1 = 0, stateNinja2 = 3, stateNinja3 = 6, stateKnight1 = 0, stateKnight2 = 5, stateBoy = 0, stateGirl = 0,
 	stateJack1 = 0, stateJack2 = 0;
-sf::Clock clockRefreshRate, clockGameMenu;
+sf::Clock clockRefreshRate, clockGameMenu, inGameEvents;
+bool gameEvent;
 
 void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
@@ -51,7 +54,7 @@ void generateGameGrid(int level, int gameGrid[40][40], int linesNo, int columnsN
 				if (i<linesNo - 8) {
 					int randNo;
 					do {
-						randNo = rand() % 6;
+						randNo = rand() % (5 + gameLvl);
 					} while (randNo == 0);
 					gameGrid[i][j] = randNo;
 				} else if (i<linesNo - 7) {
@@ -59,14 +62,14 @@ void generateGameGrid(int level, int gameGrid[40][40], int linesNo, int columnsN
 					if (chance == 0) {
 						gameGrid[i][j] = 0;
 					} else {
-						gameGrid[i][j] = rand() % 5 + 1;
+						gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
 					}
 				} else if (i<linesNo - 6) {
 					int chance = rand() % 3;
 					if (gameGrid[i-1][j] == 0 || chance == 0) {
 						gameGrid[i][j] = 0;
 					} else {
-						gameGrid[i][j] = rand() % 5 + 1;
+						gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
 					}
 				} else {
 					gameGrid[i][j] = 0;
@@ -90,7 +93,7 @@ void addRow(int level, int gameGrid[40][40], int linesNo, int columnsNo)
 		for(int i=0; i<columnsNo; i++) {
 			int randNo;
 			do {
-				randNo = rand() % 6;
+				randNo = rand() % (5 + gameLvl);
 			} while (randNo == 0);
 			gameGrid[0][i] = randNo;
 		}
@@ -98,19 +101,34 @@ void addRow(int level, int gameGrid[40][40], int linesNo, int columnsNo)
 
 }
 
-void generateGameBallColors(sf::Color ballColors[10], int colors)
+void generateGameBallColors(sf::Color ballColors[11], int colors)
 {
-	
-	srand(time(NULL));
-	for(int i=0; i<colors; i++) {
-		sf::Color generatedColor(rand() % 255, rand() % 255, rand() % 255);
-		ballColors[i] = generatedColor;
-	}
-
+	//red
+	ballColors[0] = sf::Color(213,0,0);
+	//pink
+	ballColors[1] = sf::Color(245,0,87);
+	//purple
+	ballColors[2] = sf::Color(170,0,255);
+	//indigo
+	ballColors[3] = sf::Color(49,27,146);
+	//blue
+	ballColors[4] = sf::Color(0,229,255);
+	//teal
+	ballColors[5] = sf::Color(0,230,118);
+	//green
+	ballColors[6] = sf::Color(118,255,3);
+	//yellow
+	ballColors[7] = sf::Color(255,255,0);
+	//orange
+	ballColors[8] = sf::Color(255,160,0);
+	//brown
+	ballColors[9] = sf::Color(62,39,35);
+	//null
+	ballColors[10] = sf::Color(0, 0, 0);
 }
 
-int userCharacter = 5;
-void drawCharacter(int type, int characterX, int characterY, int ballsInHandNo, int ballsInHandType, sf::Color gameBallColors[10])
+int userCharacter = 1;
+void drawCharacter(int type, int characterX, int characterY)
 {
 	if(userCharacter == 1) {
 		characterBoy[characterAnimation].setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2), 40*characterX);
@@ -196,7 +214,7 @@ void drawCharacter(int type, int characterX, int characterY, int ballsInHandNo, 
 	
 	sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
 	ballSprite.setScale(0.25, 0.25);
-	ballSprite.setColor(gameBallColors[ballsInHandType]);
+	ballSprite.setColor(gameBallColors[ballsInHandType - 1]);
 	srand(time(NULL));
 	if(ballsInHandNo > 3) ballsInHandNo = 3;
 	for(int i=ballsInHandNo - 1; i>=0; i--) {
@@ -212,13 +230,29 @@ void drawCharacter(int type, int characterX, int characterY, int ballsInHandNo, 
 }
 
 void drawPointers(int characterX, int characterY, int gameGrid[40][40])
-{
-	sf::Sprite pointerSprite(zfSFML.loadSpriteFromTexture("Assets/", "pointer", "png"));
-
-	for(int i = characterX - 1; i>=0; i--) {
-		if (gameGrid[i][characterY] == 0) {
-			pointerSprite.setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2), 40*i);
-			window.draw(pointerSprite);
+{	
+	sf::CircleShape circle;
+	circle.setRadius(7);
+	sf::RectangleShape menuSqr;
+	menuSqr.setSize(sf::Vector2f(100, 100));
+	menuSqr.setScale(0.14, 0.35);
+	if(ballsInHandNo>0) {
+		menuSqr.setFillColor(gameBallColors[ballsInHandType - 1]);
+		circle.setFillColor(gameBallColors[ballsInHandType - 1]);
+	} else {
+		menuSqr.setFillColor(sf::Color(43, 43, 43));
+		circle.setFillColor(sf::Color(43, 43, 43));
+	}
+	for(int i = levelLines - 2; i>=0; i--) {
+		if (gameGrid[i -1][characterY] != 0 && gameGrid[i][characterY] == 0 || i == 0 && gameGrid[i][characterY] == 0) {
+			menuSqr.setScale(0.14, 0.30);
+			menuSqr.setPosition(objectSize*characterY + 13 + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 22);
+			circle.setPosition(objectSize*characterY + 13 + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 17);
+			window.draw(menuSqr);
+			window.draw(circle);
+		} else if (gameGrid[i][characterY] == 0) {
+			menuSqr.setPosition(objectSize*characterY + 13 + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 15);
+			window.draw(menuSqr);
 		}
 	}
 }
@@ -253,7 +287,7 @@ int getSameBalls(int gameGrid[40][40], int ballY, int ballX)
 	return ballsNo;
 }
 
-void throwBalls(int &type, int &ballsNo, int gameGrid[40][40], int characterY, int gameLines)
+void throwBalls(int gameGrid[40][40], int characterY, int gameLines)
 {
 	int i = gameLines - 1;
 	bool found = false;
@@ -266,36 +300,36 @@ void throwBalls(int &type, int &ballsNo, int gameGrid[40][40], int characterY, i
 	}
 	if (found || i == 0) {
 		int startLine = i;
-		while(startLine < gameLines && ballsNo > 0 && type != 0) {
-			gameGrid[startLine][characterY] = type;
+		while(startLine < gameLines && ballsInHandNo > 0 && ballsInHandType != 0) {
+			gameGrid[startLine][characterY] = ballsInHandType;
 			startLine++;
-			ballsNo--;
-			if (ballsNo == 0 || startLine == gameLines) {
-				type = 0;
-				ballsNo = 0;
+			ballsInHandNo--;
+			if (ballsInHandNo == 0 || startLine == gameLines) {
+				ballsInHandType = 0;
+				ballsInHandNo = 0;
 			}
 		}
 		if(ballsStreak) {
-			type = 0;
-			ballsNo = 0;
+			ballsInHandType = 0;
+			ballsInHandNo = 0;
 		}
 	}
 }
 
-void getBalls(int &type, int &ballsNo, int gameGrid[40][40], int characterY, int gameLines)
+void getBalls(int gameGrid[40][40], int characterY, int gameLines)
 {
 	int i = gameLines - 1;
 	bool exit = false;
 	while(i >= 0 && !exit) {
 		if(gameGrid[i][characterY] != 0) {
-			if (type == 0) {
-				type = gameGrid[i][characterY];
+			if (ballsInHandType == 0) {
+				ballsInHandType = gameGrid[i][characterY];
 				gameGrid[i][characterY] = 0;
-				ballsNo++;
+				ballsInHandNo++;
 			} else {
-				if(gameGrid[i][characterY] == type) {
+				if(gameGrid[i][characterY] == ballsInHandType) {
 					gameGrid[i][characterY] = 0;
-					ballsNo++;
+					ballsInHandNo++;
 				} else {
 					exit = true;
 				}
@@ -524,8 +558,8 @@ void drawGameMenu()
 	btnPlayL3.setOrigin(btnPlayL3.getGlobalBounds().width/2, btnPlayL3.getGlobalBounds().height/2);
 	
 	btnPlayL1.setFillColor(sf::Color(26,35,126));
-	btnPlayL2.setFillColor(sf::Color(136,14,79));
-	btnPlayL3.setFillColor(sf::Color(74,20,140));
+	btnPlayL2.setFillColor(sf::Color(123,31,162));
+	btnPlayL3.setFillColor(sf::Color(123,31,162));
 	
 	btnPlayL1.setPosition(690, 50);
 	sf::IntRect btnPlayRect(btnPlayL1.getPosition().x - btnPlayL1.getGlobalBounds().width / 2, btnPlayL1.getPosition().y - btnPlayL1.getGlobalBounds().height / 2,
@@ -563,8 +597,8 @@ void drawGameMenu()
 	btnCharactersL3.setSize(sf::Vector2f(btnCharacterTxt.getLocalBounds().width + 30, btnCharacterTxt.getLocalBounds().height  + 20));
 	
 	btnCharactersL1.setFillColor(sf::Color(26,35,126));
-	btnCharactersL2.setFillColor(sf::Color(136,14,79));
-	btnCharactersL3.setFillColor(sf::Color(74,20,140));
+	btnCharactersL2.setFillColor(sf::Color(123,31,162));
+	btnCharactersL3.setFillColor(sf::Color(123,31,162));
 	
 	btnCharactersL1.setOrigin(btnCharactersL1.getGlobalBounds().width/2, btnCharactersL1.getGlobalBounds().height/2);
 	btnCharactersL2.setOrigin(btnCharactersL2.getGlobalBounds().width/2, btnCharactersL2.getGlobalBounds().height/2);
@@ -603,7 +637,7 @@ void drawInGameMenu()
 	auto translated_pos = window.mapPixelToCoords(mouse_pos);
 
 	if(clockGameMenu.getElapsedTime().asMicroseconds() > 10) {
-		if(menuSquares<levelColumns*levelLines) {
+		if(menuSquares<levelColumns*levelLines / 2) {
 			menuSquares++;
 		}
 		clockGameMenu.restart();
@@ -611,12 +645,39 @@ void drawInGameMenu()
 	sf::RectangleShape menuSqr;
 	menuSqr.setSize(sf::Vector2f(40, 40));
 	menuSqr.setFillColor(sf::Color(43, 43, 43));
-	for(int i = 0; i<menuSquares; i++) {
-		menuSqr.setPosition(objectSize*(i%levelColumns) + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*(i%levelLines) + 10);
-		window.draw(menuSqr);
+	
+	for(int i=0; i<levelLines; i++) {
+		for(int j=0; j<levelColumns; j++) {
+			int noSquares;
+			if(i>0) {
+				noSquares = i*levelColumns + j;
+			} else {
+				noSquares = j;
+			}
+			if(noSquares < menuSquares) {
+				int x = objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2);
+				int y = objectSize*i + 10;
+				menuSqr.setPosition(x, y);
+				window.draw(menuSqr);
+				x = objectSize*(levelColumns - j - 1) + (window.getSize().x/2 - objectSize*levelColumns/2);
+				y = objectSize*(levelLines - i - 1) + 10;
+				menuSqr.setPosition(x, y);
+				window.draw(menuSqr);
+				if(j<levelLines) {
+					x = objectSize*i + (window.getSize().x/2 - objectSize*levelColumns/2);
+					y = objectSize*j + 10;
+					menuSqr.setPosition(x, y);
+					window.draw(menuSqr);
+					x = objectSize*(levelColumns - i - 1) + (window.getSize().x/2 - objectSize*levelColumns/2);
+					y = objectSize*(levelLines - j - 1) + 10;
+					menuSqr.setPosition(x, y);
+					window.draw(menuSqr);
+				}
+			}
+		}
 	}
 
-	if(levelColumns*levelLines == menuSquares && optionSelected == 0) {
+	if(levelColumns*levelLines / 2 == menuSquares && optionSelected == 0) {
 		scoreText.setString("SCORE:");
 		scoreText.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 40);
 		scoreText.setCharacterSize(30);
@@ -725,7 +786,7 @@ void drawInGameMenu()
 sf::Clock inGameClock;
 void hideInGameMenu()
 {
-	if(clockGameMenu.getElapsedTime().asMicroseconds() > 10) {
+	if(clockGameMenu.getElapsedTime().asMicroseconds() > 250) {
 		if(menuSquares>0) {
 			if(menuSquares == 1) {
 				inGameClock.restart();
@@ -738,9 +799,58 @@ void hideInGameMenu()
 	sf::RectangleShape menuSqr;
 	menuSqr.setSize(sf::Vector2f(40, 40));
 	menuSqr.setFillColor(sf::Color(43, 43, 43));
-	for(int i = 0; i<menuSquares; i++) {
-		menuSqr.setPosition(objectSize*(i%levelColumns) + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*(i%levelLines) + 10);
-		window.draw(menuSqr);
+
+	if(gridGeneratedEffectShow) {
+		for(int i=0; i<levelLines; i++) {
+			for(int j=0; j<levelColumns; j++) {
+				int noSquares;
+				if(i>0) {
+					noSquares = i*levelColumns + j;
+				} else {
+					noSquares = j;
+				}
+				if(noSquares < menuSquares) {
+					int x = objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2);
+					int y = objectSize*i + 10;
+					menuSqr.setPosition(x, y);
+					window.draw(menuSqr);
+				}
+			}
+		}
+		if(menuSquares == 0) {
+			gridGeneratedEffectShow = false;
+		}
+	} else {
+		for(int i=0; i<levelLines; i++) {
+			for(int j=0; j<levelColumns; j++) {
+				int noSquares;
+				if(i>0) {
+					noSquares = i*levelColumns + j;
+				} else {
+					noSquares = j;
+				}
+				if(noSquares < menuSquares) {
+					int x = objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2);
+					int y = objectSize*i + 10;
+					menuSqr.setPosition(x, y);
+					window.draw(menuSqr);
+					x = objectSize*(levelColumns - j - 1) + (window.getSize().x/2 - objectSize*levelColumns/2);
+					y = objectSize*(levelLines - i - 1) + 10;
+					menuSqr.setPosition(x, y);
+					window.draw(menuSqr);
+					if(j<levelLines) {
+						x = objectSize*i + (window.getSize().x/2 - objectSize*levelColumns/2);
+						y = objectSize*j + 10;
+						menuSqr.setPosition(x, y);
+						window.draw(menuSqr);
+						x = objectSize*(levelColumns - i - 1) + (window.getSize().x/2 - objectSize*levelColumns/2);
+						y = objectSize*(levelLines - j - 1) + 10;
+						menuSqr.setPosition(x, y);
+						window.draw(menuSqr);
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -812,6 +922,22 @@ void drawSelectLvl()
 	selectLvlBg.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
 	selectLvlBg.setFillColor(sf::Color(43, 43, 43));
 	window.draw(selectLvlBg);
+
+	inGameExit.setString("BACK");
+	inGameExit.setPosition(window.getSize().x/2, 40);
+	inGameExit.setCharacterSize(26);
+	sf::IntRect btnCharactersRect(inGameExit.getPosition().x - inGameExit.getGlobalBounds().width / 2,
+		inGameExit.getPosition().y, inGameExit.getGlobalBounds().width, inGameExit.getGlobalBounds().height * 2);
+	if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) {
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			currentScreen = SCENE_GAME_MENU_SCREEN;
+		}
+		inGameExit.setFillColor(sf::Color(255, 255, 255));
+	} else {
+		inGameExit.setFillColor(sf::Color(198, 198, 198));
+	}
+	inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
+	window.draw(inGameExit);
 	
 	btnLvl.setLocation(150, 200);
 	btnLvl.setUnlocked(isLvlUnlocked(1));
@@ -863,14 +989,185 @@ void drawSelectLvl()
 	
 }
 
+sf::Text speedIncreased;
+int inGameEventType = 1;
+void drawGameEvent()
+{
+	sf::RectangleShape gameEventsHolder;
+	float sec = inGameEvents.getElapsedTime().asSeconds();
+	if (sec < 3.0) {
+		if(inGameEventType == 1) {
+			speedIncreased.setString("Speed Increased!");
+			speedIncreased.setFillColor(sf::Color::White);
+		} else if(inGameEventType == 2) {
+			speedIncreased.setString("Level target reached!");
+			speedIncreased.setFillColor(sf::Color::Black);
+		}
+		speedIncreased.setPosition(window.getSize().x / 2, 35);
+		speedIncreased.setCharacterSize(25);
+		speedIncreased.setOrigin(speedIncreased.getGlobalBounds().width/2 - 2, speedIncreased.getGlobalBounds().height/2);
+		
+		gameEventsHolder.setOutlineColor(sf::Color(43, 43, 43, 200));
+		gameEventsHolder.setOutlineThickness(2);
+		gameEventsHolder.setSize(sf::Vector2f(speedIncreased.getLocalBounds().width + 30, speedIncreased.getLocalBounds().height  + 14));
+		if(inGameEventType == 1) {
+			gameEventsHolder.setFillColor(sf::Color(255,143,0, 200));
+		} else if(inGameEventType == 2) {
+			gameEventsHolder.setFillColor(sf::Color(139,195,74, 220));
+		}
+		gameEventsHolder.setPosition(window.getSize().x / 2, 40);
+		gameEventsHolder.setOrigin(gameEventsHolder.getGlobalBounds().width/2 - 5, gameEventsHolder.getGlobalBounds().height/2);
+
+		window.draw(gameEventsHolder);
+		window.draw(speedIncreased);
+	} else {
+		gameEvent = false;
+	}
+}
+
+void drawOptionsScreen()
+{
+
+	sf::RectangleShape selectLvlBg, selectedCharacter;
+	selectedCharacter.setSize(sf::Vector2f(70, 10));
+	selectedCharacter.setFillColor(sf::Color(117,117,117));
+
+	selectLvlBg.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
+	selectLvlBg.setFillColor(sf::Color(43, 43, 43));
+	window.draw(selectLvlBg);
+
+	inGameExit.setString("BACK");
+	inGameExit.setPosition(window.getSize().x/2, 40);
+	inGameExit.setCharacterSize(26);
+	sf::IntRect btnCharactersRect(inGameExit.getPosition().x - inGameExit.getGlobalBounds().width / 2,
+		inGameExit.getPosition().y, inGameExit.getGlobalBounds().width, inGameExit.getGlobalBounds().height * 2);
+	if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) {
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			currentScreen = SCENE_GAME_MENU_SCREEN;
+		}
+		inGameExit.setFillColor(sf::Color(255, 255, 255));
+	} else {
+		inGameExit.setFillColor(sf::Color(198, 198, 198));
+	}
+	inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
+	window.draw(inGameExit);
+	
+	MD2 character;
+	for(int i=1; i<=5; i++) {
+		int x = i*130 - 20;
+		int y = window.getSize().y / 2 - 100 + 100 * (i%2);
+
+		if(i == 1) {
+
+			characterBoy[0].setPosition(x + 25, y);
+			int originX = characterBoy[0].getGlobalBounds().width / 2;
+			int originY = characterBoy[0].getGlobalBounds().height / 2;
+			characterBoy[0].setOrigin(originX, originY);
+			characterBoy[0].setScale(0.3, 0.3);
+			window.draw(characterBoy[0]);
+
+			if(character.imgCLicked(window, characterBoy[0])) {
+				userCharacter = i;
+			}
+			
+			if(i == userCharacter) {
+				selectedCharacter.setPosition(x + 17, y + 130);
+				selectedCharacter.setSize(sf::Vector2f(70, 10));
+				window.draw(selectedCharacter);
+			}
+
+		} else if(i == 2) {
+
+			characterGirl[0].setPosition(x, y + 4);
+			int originX = characterGirl[0].getGlobalBounds().width / 2;
+			int originY = characterGirl[0].getGlobalBounds().height / 2;
+			characterGirl[0].setOrigin(originX, originY);
+			characterGirl[0].setScale(0.31, 0.31);
+			window.draw(characterGirl[0]);
+
+			if(character.imgCLicked(window, characterGirl[0])) {
+				userCharacter = i;
+			}
+			
+			if(i == userCharacter) {
+				selectedCharacter.setPosition(x + 18, y + 130);
+				selectedCharacter.setSize(sf::Vector2f(70, 10));
+				window.draw(selectedCharacter);
+			}
+
+		} else if(i == 3) {
+
+			menuIdleKnight[0].setPosition(x, y - 13);
+			int originX = menuIdleKnight[0].getGlobalBounds().width / 2;
+			int originY = menuIdleKnight[0].getGlobalBounds().height / 2;
+			menuIdleKnight[0].setOrigin(originX, originY);
+			menuIdleKnight[0].setScale(0.24, 0.24);
+			window.draw(menuIdleKnight[0]);
+
+			if(character.imgCLicked(window, menuIdleKnight[0])) {
+				userCharacter = i;
+			}
+			
+			if(i == userCharacter) {
+				selectedCharacter.setPosition(x - 10, y + 130);
+				selectedCharacter.setSize(sf::Vector2f(96, 10));
+				window.draw(selectedCharacter);
+			}
+
+		} else if(i == 4) {
+
+			characterJack[0].setPosition(x, y - 13);
+			int originX = characterJack[0].getGlobalBounds().width / 2;
+			int originY = characterJack[0].getGlobalBounds().height / 2;
+			characterJack[0].setOrigin(originX, originY);
+			characterJack[0].setScale(0.21, 0.21);
+			window.draw(characterJack[0]);
+
+			if(character.imgCLicked(window, characterJack[0])) {
+				userCharacter = i;
+			}
+			
+			if(i == userCharacter) {
+				selectedCharacter.setPosition(x - 15, y + 130);
+				selectedCharacter.setSize(sf::Vector2f(95, 10));
+				window.draw(selectedCharacter);
+			}
+
+		} else if(i == 5) {
+
+			characterNinja[0].setPosition(x, y + 15);
+			int originX = characterNinja[0].getGlobalBounds().width / 2;
+			int originY = characterNinja[0].getGlobalBounds().height / 2;
+			characterNinja[0].setOrigin(originX, originY);
+			characterNinja[0].setScale(0.3, 0.3);
+			window.draw(characterNinja[0]);
+
+			if(character.imgCLicked(window, characterNinja[0])) {
+				userCharacter = i;
+			}
+
+			if(i == userCharacter) {
+				selectedCharacter.setPosition(x - 16, y + 130);
+				selectedCharacter.setSize(sf::Vector2f(90, 10));
+				window.draw(selectedCharacter);
+			}
+
+		}
+	}
+
+}
+
 int main()
 {
-	
+	int rangeSec;
+	bool lvlTargetHit;
+	sf::Image icon;
+	icon.loadFromFile("Assets/zeoflow_logo.png");
+	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
 	for(int i=0; i<6; i++) {
 		finishLvlScore[i] = 3500 + i*750;
 	}
-	gameLvl = 3;
-	userCharacter = 1;
 
 	window.setFramerateLimit(30);
 	
@@ -881,6 +1178,7 @@ int main()
 
 	ballSprite.setScale(0.4, 0.4);
 
+	speedIncreased.setFont(font1);
 	scoreText.setFont(font1);
 	scoreTitle.setFont(font1);
 	inGameResume.setFont(font1);
@@ -960,7 +1258,6 @@ int main()
 
 	int clockState = 0;
 	int gameGrid[40][40];
-	sf::Color gameBallColors[10];
 	
 	sf::RectangleShape splashScreenBg;
 	splashScreenBg.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
@@ -1012,12 +1309,12 @@ int main()
 						//up
 						int noBalls = ballsInHandNo;
 						ballsStreak = ballsInHandNo >=3;
-						throwBalls(ballsInHandType, ballsInHandNo, gameGrid, characterY, levelLines);
+						throwBalls(gameGrid, characterY, levelLines);
 						int ballX = getBallX(gameGrid, characterY, levelLines);
 						markBalls(gameGrid, levelLines, levelColumns, characterY, ballX, ballsStreak);
 					} else if (event.key.code == 74 && !showMenu && menuSquares == 0) {
 						//down
-						getBalls(ballsInHandType, ballsInHandNo, gameGrid, characterY, levelLines);
+						getBalls(gameGrid, characterY, levelLines);
 					} else if(sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
 						if(menuSquares == 0) {
 							menuSquares = 0;
@@ -1067,21 +1364,46 @@ int main()
 				characterY = levelColumns/2;
 				inGameClock.restart();
 				menuSquares = levelColumns * levelLines;
+				gridGeneratedEffectShow = true;
+				if(lvlUnlocked == gameLvl) {
+					lvlTargetHit = false;
+				} else {
+					lvlTargetHit = true;
+				}
 			} else {
 				int sec = (int) inGameClock.getElapsedTime().asSeconds();
-				int rangeSec;
-				if(lvlScore < 2500) {
-					rangeSec = 7;
-				} else if(lvlScore < 4500) {
-					rangeSec = 6;
-				} else if(lvlScore < 6500) {
-					rangeSec = 5;
-				} else if(lvlScore < 8500) {
-					rangeSec = 4;
+				if(lvlScore < 1000) {
+					rangeSec = 7 + gameLvl;
+				} else if(lvlScore < 2500) {
+					if(rangeSec > 6 + gameLvl) {
+						inGameEvents.restart();
+						gameEvent = true;
+						inGameEventType = 1;
+					}
+					rangeSec = 6 + gameLvl;
+				} else if(lvlScore < 6250) {
+					if(rangeSec > 5 + gameLvl) {
+						inGameEvents.restart();
+						gameEvent = true;
+						inGameEventType = 1;
+					}
+					rangeSec = 5 + gameLvl;
+				} else if(lvlScore < 9000) {
+					if(rangeSec > 4 + gameLvl) {
+						inGameEvents.restart();
+						gameEvent = true;
+						inGameEventType = 1;
+					}
+					rangeSec = 4 + gameLvl;
 				} else {
-					rangeSec = 3;
+					if(rangeSec > 3 + gameLvl) {
+						inGameEvents.restart();
+						gameEvent = true;
+						inGameEventType = 1;
+					}
+					rangeSec = 3 + gameLvl;
 				}
-				if(sec % rangeSec == 2 && !rowGenerated) {
+				if(sec % rangeSec == 0 && !rowGenerated) {
 					if(!gameLost && menuSquares == 0) {
 						addRow(1, gameGrid, levelLines, levelColumns);
 					}
@@ -1105,18 +1427,18 @@ int main()
 					for(int j=0; j<levelColumns; j++) {
 						if(gameGrid[i][j] != 0) {
 							int ballType = gameGrid[i][j];
-							ballSprite.setColor(gameBallColors[ballType]);
+							ballSprite.setColor(gameBallColors[ballType - 1]);
 							ballSprite.setPosition(objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 10);
 							window.draw(ballSprite);
 						}
 					}
 				}
-				if(!gameLost) drawPointers(characterX, characterY, gameGrid);
+				if(!gameLost && menuSquares == 0) drawPointers(characterX, characterY, gameGrid);
 				if(gameLost) {
 					drawGameLost();
 				} else {
 					if(showMenu) {
-					drawInGameMenu();
+						drawInGameMenu();
 					} else {
 						hideInGameMenu();
 					}
@@ -1129,7 +1451,13 @@ int main()
 					clockGameMenu.restart();
 					gameLost = true;
 				}
-				drawCharacter(0, characterX, characterY, ballsInHandNo, ballsInHandType, gameBallColors);
+				if(lvlScore > finishLvlScore[gameLvl - 1] && !lvlTargetHit) {
+					lvlTargetHit = true;
+					inGameEvents.restart();
+					gameEvent = true;
+					inGameEventType = 2;
+				}
+				drawCharacter(0, characterX, characterY);
 
 				portal.setScale(0.2, 0.2);
 				portal.setPosition(objectSize*-2 + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*(characterX - 1));
@@ -1138,7 +1466,7 @@ int main()
 				portal.setPosition(objectSize*levelColumns + (window.getSize().x/2 - objectSize*levelColumns/2) + 13, objectSize*(characterX - 1));
 				if(!gameLost) window.draw(portal);
 
-				if(!showMenu && !gameLost) {
+				if(menuSquares == 0 && !gameLost) {
 					scoreText.setString("Score:");
 					scoreText.setPosition(objectSize*levelColumns + 50 + (window.getSize().x/2 - objectSize*levelColumns/2), 10);
 					scoreText.setCharacterSize(20);
@@ -1153,18 +1481,19 @@ int main()
 					window.draw(scoreTitle);
 				}
 
+				if(gameEvent) {
+					drawGameEvent();
+				}
+
 			}
 		} else if(currentScreen == SCENE_GAME_MENU_SCREEN) {
 			window.draw(bgMenu);
 			drawGameMenuBg();
 			drawGameMenu();
 		} else if(currentScreen == SCENE_OPTIONS_SCREEN) {
-			window.draw(bgMenu);
-			drawGameMenuBg();
+			drawOptionsScreen();
 		} else if(currentScreen == SCENE_SELECT_LVL) {
 			drawSelectLvl();
-			//cin>>gameLvl>>userCharacter;
-			//currentScreen = SCENE_GAME_SCREEN;
 		}
         window.display();
 	}

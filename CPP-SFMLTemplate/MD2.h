@@ -36,6 +36,9 @@ namespace std
 		bool btnClicked(sf::RenderWindow&);
 
 	public:
+		bool imgCLicked(sf::RenderWindow&, sf::Sprite);
+
+	public:
 		void setUnlocked(bool);
 
 	};
@@ -121,6 +124,19 @@ namespace std
 		bool clicked = false;
 		if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) {
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && unlocked) {
+				clicked = true;
+			}
+		}
+		return clicked;
+	}
+
+	bool MD2::imgCLicked(sf::RenderWindow& window, sf::Sprite character)
+	{
+		sf::IntRect btnCharactersRect(character.getPosition().x - character.getGlobalBounds().width / 2,
+			character.getPosition().y, character.getGlobalBounds().width, character.getGlobalBounds().height*2);
+		bool clicked = false;
+		if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 				clicked = true;
 			}
 		}
