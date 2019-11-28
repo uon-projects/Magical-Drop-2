@@ -18,7 +18,8 @@ int finishLvlScore[6];
 int gameLvl;
 sf::Color gameBallColors[10];
 int lvlUnlocked = 1;
-sf::Text scoreText, scoreTitle, inGameOptions, inGameExit, inGameResume, exitTitle, exitAfirmative, exitNegative, exitContent, btnPlayTxt, btnCharacterTxt;
+sf::Text scoreText, scoreTitle, inGameOptions, inGameExit, inGameResume, exitTitle, exitAfirmative, exitNegative, exitContent,
+	btnPlayTxt, btnCharacterTxt, btnHowToTxt;
 sf::RenderWindow window(sf::VideoMode(800, 500), "Magical Drop 2");
 
 bool showMenu = false, gameGridGenerated = false, gridGeneratedEffectShow;
@@ -557,9 +558,10 @@ void drawGameMenu()
 	btnPlayL2.setOrigin(btnPlayL2.getGlobalBounds().width/2, btnPlayL2.getGlobalBounds().height/2);
 	btnPlayL3.setOrigin(btnPlayL3.getGlobalBounds().width/2, btnPlayL3.getGlobalBounds().height/2);
 	
-	btnPlayL1.setFillColor(sf::Color(26,35,126));
-	btnPlayL2.setFillColor(sf::Color(123,31,162));
-	btnPlayL3.setFillColor(sf::Color(123,31,162));
+	sf::Color clrL1(63,81,181), clrL2(49,27,146);
+	btnPlayL1.setFillColor(clrL1);
+	btnPlayL2.setFillColor(clrL2);
+	btnPlayL3.setFillColor(clrL2);
 	
 	btnPlayL1.setPosition(690, 50);
 	sf::IntRect btnPlayRect(btnPlayL1.getPosition().x - btnPlayL1.getGlobalBounds().width / 2, btnPlayL1.getPosition().y - btnPlayL1.getGlobalBounds().height / 2,
@@ -596,9 +598,9 @@ void drawGameMenu()
 	btnCharactersL2.setSize(sf::Vector2f(btnCharacterTxt.getLocalBounds().width + 30, btnCharacterTxt.getLocalBounds().height  + 20));
 	btnCharactersL3.setSize(sf::Vector2f(btnCharacterTxt.getLocalBounds().width + 30, btnCharacterTxt.getLocalBounds().height  + 20));
 	
-	btnCharactersL1.setFillColor(sf::Color(26,35,126));
-	btnCharactersL2.setFillColor(sf::Color(123,31,162));
-	btnCharactersL3.setFillColor(sf::Color(123,31,162));
+	btnCharactersL1.setFillColor(clrL1);
+	btnCharactersL2.setFillColor(clrL2);
+	btnCharactersL3.setFillColor(clrL2);
 	
 	btnCharactersL1.setOrigin(btnCharactersL1.getGlobalBounds().width/2, btnCharactersL1.getGlobalBounds().height/2);
 	btnCharactersL2.setOrigin(btnCharactersL2.getGlobalBounds().width/2, btnCharactersL2.getGlobalBounds().height/2);
@@ -619,6 +621,47 @@ void drawGameMenu()
 	} else {
 		btnCharactersL2.setPosition(675, 130);
 		btnCharactersL3.setPosition(705, 110);
+	}
+
+	window.draw(btnCharactersL2);
+	window.draw(btnCharactersL3);
+	window.draw(btnCharactersL1);
+
+	window.draw(btnCharacterTxt);
+
+	btnCharacterTxt.setString("HOW TO");
+	btnCharacterTxt.setPosition(690, 180);
+	btnCharacterTxt.setCharacterSize(30);
+	btnCharacterTxt.setFillColor(sf::Color::White);
+	btnCharacterTxt.setOrigin(btnCharacterTxt.getGlobalBounds().width/2, btnCharacterTxt.getGlobalBounds().height/2);
+
+	btnCharactersL1.setSize(sf::Vector2f(btnCharacterTxt.getLocalBounds().width + 30, btnCharacterTxt.getLocalBounds().height  + 20));
+	btnCharactersL2.setSize(sf::Vector2f(btnCharacterTxt.getLocalBounds().width + 30, btnCharacterTxt.getLocalBounds().height  + 20));
+	btnCharactersL3.setSize(sf::Vector2f(btnCharacterTxt.getLocalBounds().width + 30, btnCharacterTxt.getLocalBounds().height  + 20));
+	
+	btnCharactersL1.setFillColor(clrL1);
+	btnCharactersL2.setFillColor(clrL2);
+	btnCharactersL3.setFillColor(clrL2);
+	
+	btnCharactersL1.setOrigin(btnCharactersL1.getGlobalBounds().width/2, btnCharactersL1.getGlobalBounds().height/2);
+	btnCharactersL2.setOrigin(btnCharactersL2.getGlobalBounds().width/2, btnCharactersL2.getGlobalBounds().height/2);
+	btnCharactersL3.setOrigin(btnCharactersL3.getGlobalBounds().width/2, btnCharactersL3.getGlobalBounds().height/2);
+	
+	btnCharactersL1.setPosition(690, 190);
+	sf::IntRect btnC2haractersRect(btnCharactersL1.getPosition().x - btnCharactersL1.getGlobalBounds().width / 2, btnCharactersL1.getPosition().y - btnCharactersL1.getGlobalBounds().height / 2,
+		btnCharactersL1.getGlobalBounds().width, btnCharactersL1.getGlobalBounds().height);
+
+	if (btnC2haractersRect.contains(sf::Mouse::getPosition(window))) {
+		btnCharactersL2.setPosition(685, 195);
+		btnCharactersL3.setPosition(695, 185);
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			currentScreen = SCENE_OPTIONS_SCREEN;
+			clockRefreshRate.restart();
+		}
+	} else {
+		btnCharactersL2.setPosition(675, 200);
+		btnCharactersL3.setPosition(705, 180);
 	}
 
 	window.draw(btnCharactersL2);
@@ -916,9 +959,27 @@ void drawGameLost()
 		inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
 		window.draw(inGameExit);
 
+		inGameExit.setString("RETRY");
+		inGameExit.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 270);
+		inGameExit.setCharacterSize(26);
+		if(inGameExit.getGlobalBounds().contains(translated_pos)) {
+			inGameExit.setFillColor(sf::Color(255, 255, 255));
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				clockRefreshRate.restart();
+				gameGridGenerated = false;
+				showMenu = false;
+				menuSquares = 0;
+				currentScreen = SCENE_GAME_SCREEN;
+			}
+		} else {
+			inGameExit.setFillColor(sf::Color(198, 198, 198));
+		}
+		inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
+		window.draw(inGameExit);
+
 		if(gameLvl<lvlUnlocked && gameLvl <=6) {
 			inGameExit.setString("NEXT LEVEL");
-			inGameExit.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 270);
+			inGameExit.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 300);
 			inGameExit.setCharacterSize(26);
 			if(inGameExit.getGlobalBounds().contains(translated_pos)) {
 				inGameExit.setFillColor(sf::Color(255, 255, 255));
@@ -1215,6 +1276,7 @@ int main()
 	exitTitle.setFont(font1);
 	btnCharacterTxt.setFont(font1);
 	btnPlayTxt.setFont(font1);
+	btnHowToTxt.setFont(font1);
 
 	gameLostColors[0] = sf::Color(238, 63, 28);
 	gameLostColors[1] = sf::Color(238, 63, 28);
