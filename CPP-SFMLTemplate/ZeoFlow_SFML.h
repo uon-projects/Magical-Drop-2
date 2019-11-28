@@ -19,6 +19,15 @@ namespace zeoFlow
 	public:
 		sf::Sprite spriteInMiddle(sf::Sprite, double, double);
 
+	public:
+		sf::Font loadFont(std::string, std::string, std::string);
+
+	public:
+		sf::Text drawBtnText(std::string, int, int, int, sf::Font);
+
+	public:
+		void drawBtn(sf::Text);
+
 	};
 
 	sf::Sprite ZeoFlow_SFML::loadSpriteFromTexture(std::string assetPath, std::string assetName, std::string assetExtension)
@@ -52,5 +61,47 @@ namespace zeoFlow
 		double spriteWidthHalf = assetSprite.getGlobalBounds().width / 2;
 		assetSprite.setPosition(windowWidthHalf - spriteWidthHalf, windowHeightHalf - spriteHeightHalf);
 		return assetSprite;
+	}
+
+	sf::Font ZeoFlow_SFML::loadFont(std::string assetPath, std::string assetName, std::string assetExtension)
+	{
+		sf::Font font;
+		if (!font.loadFromFile(assetPath + assetName + "." + assetExtension)) {
+				system("pause");
+		}
+		return font;
+	}
+
+	sf::Text ZeoFlow_SFML::drawBtnText(std::string title, int characterSize, int x, int y, sf::Font font)
+	{
+		sf::Text btnText;
+
+		btnText.setString(title);
+		btnText.setFont(font);
+		btnText.setPosition(x, y);
+		btnText.setCharacterSize(characterSize);
+		btnText.setFillColor(sf::Color::White);
+		btnText.setOrigin(btnText.getGlobalBounds().width/2, btnText.getGlobalBounds().height/2);
+
+		return btnText;
+
+	}
+
+	void ZeoFlow_SFML::drawBtn(sf::Text btnText)
+	{
+		sf::RectangleShape btnPlayL1, btnPlayL2, btnPlayL3;
+
+		btnPlayL1.setSize(sf::Vector2f(btnText.getLocalBounds().width + 30, btnText.getLocalBounds().height  + 20));
+		btnPlayL2.setSize(sf::Vector2f(btnText.getLocalBounds().width + 30, btnText.getLocalBounds().height  + 20));
+		btnPlayL3.setSize(sf::Vector2f(btnText.getLocalBounds().width + 30, btnText.getLocalBounds().height  + 20));
+
+		btnPlayL1.setOrigin(btnPlayL1.getGlobalBounds().width/2, btnPlayL1.getGlobalBounds().height/2);
+		btnPlayL2.setOrigin(btnPlayL2.getGlobalBounds().width/2, btnPlayL2.getGlobalBounds().height/2);
+		btnPlayL3.setOrigin(btnPlayL3.getGlobalBounds().width/2, btnPlayL3.getGlobalBounds().height/2);
+	
+		btnPlayL1.setFillColor(sf::Color(26,35,126));
+		btnPlayL2.setFillColor(sf::Color(136,14,79));
+		btnPlayL3.setFillColor(sf::Color(74,20,140));
+
 	}
 }

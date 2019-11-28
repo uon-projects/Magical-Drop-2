@@ -23,5 +23,8 @@
     <ClInclude Include="ZeoFlow_SFML.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MD2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
