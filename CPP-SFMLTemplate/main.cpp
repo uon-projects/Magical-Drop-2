@@ -383,7 +383,7 @@ void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 				if(gameGrid[j-1][i] != gameGrid[j+1][i]) {
 					int streak = isAStreak(i, j-1, gameGrid);
 					if(streak >= 3) {
-						markBalls(gameGrid, linesNo, columnsNo, j-1, i, streak);
+						markBalls(gameGrid, linesNo, columnsNo, i, j-1, streak);
 					}
 				}
 				j = linesNo - 1;
