@@ -465,7 +465,6 @@ void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballTy
 
 void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak)
 {
-	cout<<ballsStreak<<' ';
 	int ballType = gameGrid[ballX][ballY];
 	if(getSameBalls(gameGrid, ballY, ballX) >= 3 || ballsStreak >= 3) {
 		gameGrid[ballX][ballY] = ballType * -1;
