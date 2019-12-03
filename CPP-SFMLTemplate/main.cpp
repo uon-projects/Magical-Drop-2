@@ -354,20 +354,25 @@ bool checkGameLost(int gameGrid[40][40], int linesNo, int columnsNo)
 
 }
 
-bool checkGameWon(int gameGrid[40][40], int linesNo, int columnsNo)
+int isAStreak(int column, int line, int gameGrid[40][40])
 {
-	bool won = false;
-	int i = 0;
-	while(!won && i<columnsNo) {
-		if (gameGrid[0][i] == 0) {
-			won = true;
-		}
-		i++;
+	int ballsNo = 1;
+	int ballType = gameGrid[line][column];
+	int i = line - 1;
+	while(gameGrid[i][column] == ballType && i>=0) {
+		i--;
+		ballsNo++;
 	}
-	return won;
+	i = line + 1;
+	while(gameGrid[i][column] == ballType && i<levelLines) {
+		i++;
+		ballsNo++;
+	}
 
+	return ballsNo;
 }
 
+void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak);
 void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 	for(int i = 0; i<columnsNo; i++) {
@@ -375,6 +380,12 @@ void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 			if(gameGrid[j][i] != 0 && gameGrid[j - 1][i] == 0) {
 				gameGrid[j - 1][i] = gameGrid[j][i];
 				gameGrid[j][i] = 0;
+				if(gameGrid[j-1][i] != gameGrid[j+1][i]) {
+					int streak = isAStreak(i, j-1, gameGrid);
+					if(streak >= 3) {
+						markBalls(gameGrid, linesNo, columnsNo, j-1, i, streak);
+					}
+				}
 				j = linesNo - 1;
 			}
 		}
@@ -454,11 +465,12 @@ void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballTy
 
 void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak)
 {
-
+	cout<<ballsStreak<<' ';
 	int ballType = gameGrid[ballX][ballY];
 	if(getSameBalls(gameGrid, ballY, ballX) >= 3 || ballsStreak >= 3) {
 		gameGrid[ballX][ballY] = ballType * -1;
 		checkBallTop(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
+		checkBallBottom(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
 		checkBallLeft(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
 		checkBallRight(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
 		removeAllBalls(gameGrid, linesNo, columnsNo, ballType);
