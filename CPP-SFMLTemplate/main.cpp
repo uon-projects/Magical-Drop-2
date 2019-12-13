@@ -1343,24 +1343,40 @@ void drawOptionsScreen()
 
 int main()
 {
-	int rangeSec;
+	//setting the window frame limit - 30
+	window.setFramerateLimit(30);
+
+	//setting the game window icon
 	sf::Image icon;
 	icon.loadFromFile("Assets/zeoflow_logo.png");
 	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
+	//initialise the array that contains each level target
 	for(int i=0; i<6; i++) {
 		finishLvlScore[i] = 3500 + i*750;
 	}
 
-	window.setFramerateLimit(30);
+	//initialise the array that contains the colors for the end screen when you are loosing - red colors
+	gameLostColors[0] = sf::Color(238, 63, 28);
+	gameLostColors[1] = sf::Color(238, 63, 28);
+	gameLostColors[2] = sf::Color(214, 51, 18);
+	gameLostColors[3] = sf::Color(186, 41, 12);
+	gameLostColors[4] = sf::Color(153, 31, 7);
+	gameLostColors[5] = sf::Color(114, 22, 3);
+	gameLostColors[6] = sf::Color(66, 13, 2);
+	gameLostColors[7] = sf::Color(43, 43, 43);
+
+	//initialise the array that contains the colors for the end screen when you are winning - green colors
+	gameWonColors[0] = sf::Color(139, 195, 74);
+	gameWonColors[1] = sf::Color(112, 169, 46);
+	gameWonColors[2] = sf::Color(87, 142, 24);
+	gameWonColors[3] = sf::Color(67, 106, 21);
+	gameWonColors[4] = sf::Color(56, 95, 10);
+	gameWonColors[5] = sf::Color(47, 74, 15);
+	gameWonColors[6] = sf::Color(50, 70, 27);
+	gameWonColors[7] = sf::Color(43, 43, 43);
 	
-	sf::Sprite backgroundSprite(zfSFML.loadSpriteFromTexture("Assets/", "background", "png"));
-	sf::Sprite bgMenu(zfSFML.loadSpriteFromTexture("Assets/", "bg3", "png"));
-	sf::Sprite zeoFlowSprite(zfSFML.loadSpriteFromTexture("Assets/", "zeoflow_logo", "png"));
-	sf::Sprite portal(zfSFML.loadSpriteFromTexture("Assets/", "portal", "png"));
-
-	ballSprite.setScale(0.4, 0.4);
-
+	//set the font for each variable of text type
 	speedIncreased.setFont(font1);
 	scoreText.setFont(font1);
 	scoreTitle.setFont(font1);
@@ -1375,27 +1391,23 @@ int main()
 	btnPlayTxt.setFont(font1);
 	btnHowToTxt.setFont(font1);
 
-	gameLostColors[0] = sf::Color(238, 63, 28);
-	gameLostColors[1] = sf::Color(238, 63, 28);
-	gameLostColors[2] = sf::Color(214, 51, 18);
-	gameLostColors[3] = sf::Color(186, 41, 12);
-	gameLostColors[4] = sf::Color(153, 31, 7);
-	gameLostColors[5] = sf::Color(114, 22, 3);
-	gameLostColors[6] = sf::Color(66, 13, 2);
-	gameLostColors[7] = sf::Color(43, 43, 43);
-
-	gameWonColors[0] = sf::Color(139, 195, 74);
-	gameWonColors[1] = sf::Color(112, 169, 46);
-	gameWonColors[2] = sf::Color(87, 142, 24);
-	gameWonColors[3] = sf::Color(67, 106, 21);
-	gameWonColors[4] = sf::Color(56, 95, 10);
-	gameWonColors[5] = sf::Color(47, 74, 15);
-	gameWonColors[6] = sf::Color(50, 70, 27);
-	gameWonColors[7] = sf::Color(43, 43, 43);
-
+	//declare the game board
+	//the board where will appear the balls
 	sf::RectangleShape gameHolder;
 	gameHolder.setOutlineThickness(10);
 
+	//set the ball scale - 40x40 px
+	ballSprite.setScale(0.4, 0.4);
+
+	//load the sprites using the ZeoFlow Library
+	sf::Sprite bgMenu(zfSFML.loadSpriteFromTexture("Assets/", "bg3", "png"));
+	sf::Sprite zeoFlowSprite(zfSFML.loadSpriteFromTexture("Assets/", "zeoflow_logo", "png")); //the zeoflow logo - for splash screen
+	sf::Sprite portal(zfSFML.loadSpriteFromTexture("Assets/", "portal", "png")); //the portal that is used at the boundaries of the game board
+	sf::Sprite backgroundSprite(zfSFML.loadSpriteFromTexture("Assets/", "background", "png")); //in game background
+	backgroundSprite = zfSFML.formatSpriteForBackground(backgroundSprite); //foramting the bg 
+
+	//initialise the arrays that contains the images of different characters
+	//helps us to animate them
 	string boyCharacter = "idle_";
 	for(int i=0; i<15; i++) {
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/boy/", boyCharacter + to_string(i + 1), "png"));
@@ -1447,22 +1459,24 @@ int main()
 		menuGlideNinja[i] = characterIdle;
 	}
 
-	backgroundSprite = zfSFML.formatSpriteForBackground(backgroundSprite);
+	int gameGrid[40][40]; //the array that store the game board
+	int clockState = 0; //helps us to reset the in-game clock at the first launch
+	int characterX, characterY; //the x and y coordinates for the character
 
-	int clockState = 0;
-	int gameGrid[40][40];
-	
+	int rangeSec; //the X seconds when we need to add a new row
+	bool rowGenerated = false; //helps us to add a new row
+
+	//the background for the splash screen
 	sf::RectangleShape splashScreenBg;
 	splashScreenBg.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
 	sf::Color color(16, 16, 16);
 	splashScreenBg.setFillColor(color);
 	
-	int characterX, characterY;
-	bool rowGenerated = false;
-
+	//the loop that draws the game
     while (window.isOpen())
     {
         sf::Event event;
+		//the loop that checks for different inputs
         while (window.pollEvent(event))
         {
 			if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape) {
@@ -1513,15 +1527,18 @@ int main()
 			}
 		}
 
+		//clear the previous frame window and draw the current frame window
         window.clear();
 
 		if (clockState == 0)
 		{
+			//first game launch - reset the clock
 			inGameClock.restart();
 			clockState++;
 		}
 		if (currentScreen == SCENE_SPLASH_SCREEN)
 		{
+			//show the splash screen
 			float sec = inGameClock.getElapsedTime().asSeconds();
 			if (sec < 2.0)
 			{
@@ -1532,13 +1549,17 @@ int main()
 			} 
 			else
 			{
+				//after 2 seconds make the splash screen to dissapear
 				gameGridGenerated = false;
 				currentScreen = SCENE_GAME_MENU_SCREEN;
 				clockRefreshRate.restart();
 			}
 		} else if(currentScreen == SCENE_GAME_SCREEN) {
+
 			window.draw(backgroundSprite);
 			if (!gameGridGenerated) {
+
+				//the game lvl was just created so we need to initiate all the things that helps us to draw the game lvl
 				gameGridGenerated = true;
 				levelColumns = 5 + gameLvl * 2;
 				levelLines = 12;
@@ -1558,7 +1579,10 @@ int main()
 				} else {
 					lvlTargetHit = true;
 				}
+
 			} else {
+
+				//set the 'x' seconds - the seconds that represents wehn to add a new row
 				int sec = (int) inGameClock.getElapsedTime().asSeconds();
 				if(lvlScore < 1000) {
 					rangeSec = 7 + gameLvl;
@@ -1591,6 +1615,8 @@ int main()
 					}
 					rangeSec = 3 + gameLvl;
 				}
+
+				//add a new row
 				if(sec % rangeSec == 0 && !rowGenerated) {
 					if(!gameLost && menuSquares == 0) {
 						addRow(gameGrid, levelLines, levelColumns);
@@ -1600,6 +1626,8 @@ int main()
 					inGameClock.restart();
 					rowGenerated = false;
 				}
+
+				//check if the game is lost and change the color of the game holder
 				if(gameLost)  {
 					if(lvlTargetHit && lvlScore > finishLvlScore[gameLvl - 1]) {
 						gameHolder.setOutlineColor(gameWonColors[gameLostLines]);
@@ -1613,15 +1641,16 @@ int main()
 				}
 				gameHolder.setSize(sf::Vector2f(objectSize * levelColumns + 3, objectSize * levelLines + 3));
 				gameHolder.setPosition((window.getSize().x/2 - objectSize*levelColumns/2) + 1, 11);
-				window.draw(gameHolder);
+				window.draw(gameHolder); //draw the game holder
+
 				//draw game pieces
 				for(int i=0; i<levelLines; i++) {
 					for(int j=0; j<levelColumns; j++) {
 						if(gameGrid[i][j] != 0) {
-							int ballType = gameGrid[i][j];
-							ballSprite.setColor(gameBallColors[ballType - 1]);
-							ballSprite.setPosition(objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 10);
-							window.draw(ballSprite);
+							int ballType = gameGrid[i][j]; //get the ball type
+							ballSprite.setColor(gameBallColors[ballType - 1]); //set the ball color
+							ballSprite.setPosition(objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 10); //set ball position
+							window.draw(ballSprite); //draw the ball
 						}
 					}
 				}
