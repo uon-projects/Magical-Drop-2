@@ -1,109 +1,138 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <fstream>
 #include "ZeoFlow_SFML.h"
 #include "MD2.h"
-#include <fstream>
 
 //Compiler Directives
 using namespace std;
 using namespace zeoFlow;
 
+ZeoFlow_SFML zfSFML; //declaring a variable of ZeoFlow_SFML type - help us to draw the images easier
+MD2 btnLvl; //declaring a variable of MD2 type - help us to draw the buttons
+
+sf::RenderWindow window(sf::VideoMode(800, 500), "Magical Drop 2"); //the game screen
+
+//declaring the value for each screen that can be found in game
 const int SCENE_SPLASH_SCREEN = 0;
 const int SCENE_GAME_MENU_SCREEN = 1;
 const int SCENE_GAME_SCREEN = 2;
 const int SCENE_OPTIONS_SCREEN = 3;
 const int SCENE_SELECT_LVL = 4;
 const int SCENE_HOW_TO_SCREEN = 5;
-
-int finishLvlScore[6];
-int gameLvl;
-sf::Color gameBallColors[10];
-int lvlUnlocked = 1;
-sf::Text scoreText, scoreTitle, inGameOptions, inGameExit, inGameResume, exitTitle, exitAfirmative, exitNegative, exitContent,
-	btnPlayTxt, btnCharacterTxt, btnHowToTxt;
-sf::RenderWindow window(sf::VideoMode(800, 500), "Magical Drop 2");
-
-bool showMenu = false, gameGridGenerated = false, gridGeneratedEffectShow;
-ZeoFlow_SFML zfSFML;
-bool ballsStreak, gameLost;
-int ballsInHandNo = 0, ballsInHandType = 0;
-int levelLines, levelColumns;
-const int objectSize = 35;
-int characterAnimation = 0;
-sf::Sprite characterBoy[15], characterGirl[16], characterJack[10], characterNinja[10], menuWalkBoy[15], menuWalkGirl[20], menuRunJack[8], menuSlideJack[10], menuIdleKnight[10],
-	menuGlideNinja[10];
-bool spriteToRight = true;
-sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
-int currentScreen = SCENE_SPLASH_SCREEN;
-
+const int objectSize = 35; //the ball size
+int currentScreen = SCENE_SPLASH_SCREEN; //the current screen
+int lvlUnlocked = 1; //variable that store the number of unlocked levels
+int gameLvl; //variable that store the current level
+int inGameEventType = 1; //variable storing the type of notification that appear in game
+int userCharacter = 1; //here we store the character that the user choose (by default is the first character - the boy)
+int finishLvlScore[6]; //array that stores each level target
+int characterAnimation = 0; //the current sprite that makes the animation of the character - while playing
+//the current sprite of the characters that appear in game menu
 int stateNinja1 = 0, stateNinja2 = 3, stateNinja3 = 6, stateKnight1 = 0, stateKnight2 = 5, stateBoy = 0, stateGirl = 0,
 	stateJack1 = 0, stateJack2 = 0;
-sf::Clock clockRefreshRate, clockGameMenu, inGameEvents;
-bool gameEvent;
+int lvlScore = 0; //the current score
+int menuSquares = 0, gameLostLines = 0; //declaring the items that helps to animate the menu/end screen while playing
+int optionSelected = 0; //helps us to know which option was selected from the in game menu/end screen
+int ballsInHandNo = 0, ballsInHandType = 0; //store the data about the ball(s) that are in the character hands
+int levelLines, levelColumns; //the total number of lines and columns for the current level
 
+sf::Color gameBallColors[10]; //declaring the array that contains the colors that are used to fill the balls
+sf::Color gameLostColors[8], gameWonColors[8]; //declaring the arrays that contins the colors for the end screen
+
+sf::Font font1(zfSFML.loadFont("Assets/fonts/", "big_space", "otf")); //declaring the font that is used by text
+
+//declring all the variables of text type that are used in the game
+sf::Text scoreText, scoreTitle, inGameOptions, inGameExit, inGameResume, exitTitle, exitAfirmative, exitNegative, exitContent,
+	btnPlayTxt, btnCharacterTxt, btnHowToTxt, speedIncreased;
+
+bool showMenu = false; //help us to know if we need to draw the in game menu/end screen or not
+bool gameGridGenerated = false; //generate the game grid for the first running of the game screen after a lvl was selected
+bool gridGeneratedEffectShow; //help us to know if the screen was animated after the game grid was generated
+bool ballsStreak; //after we drop the balls we need to know if it was a streak of at least 3 balls
+bool gameLost; //help us to know when the game was lost
+bool spriteToRight = true; //variable that is important for the character facing (to right or left)
+bool gameEvent; //to know if it is a game notification and draw it
+bool lvlTargetHit; //helps us to know if we had previously reached the level target
+
+//ararys of sprites that contains the character images - helps us to animate them
+sf::Sprite characterBoy[15], characterGirl[16], characterJack[10], characterNinja[10], menuWalkBoy[15], menuWalkGirl[20], menuRunJack[8], menuSlideJack[10], menuIdleKnight[10],
+	menuGlideNinja[10];
+sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png")); //the ball sprite
+
+//clock variables that makes the game more realistic
+sf::Clock clockRefreshRate, clockGameMenu, inGameEvents, inGameClock;
+
+//declaring the method with its definition only for accesing each other from within
+//methods used for creating the chain reaction
 void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 
-void generateGameGrid(int level, int gameGrid[40][40], int linesNo, int columnsNo)
+//declaring the method with its definition only; this way it could be called by other methods that are above the method
+void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak);
+
+//method that generates the gamegrid - the game grid is the one tht stores the values for the balls
+void generateGameGrid(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 
-	if (level == 1) {
-		srand(time(NULL));
-		for(int i=0; i<linesNo; i++) {
-			for(int j=0; j<columnsNo; j++) {
-				if (i<linesNo - 8) {
-					int randNo;
-					do {
-						randNo = rand() % (5 + gameLvl);
-					} while (randNo == 0);
-					gameGrid[i][j] = randNo;
-				} else if (i<linesNo - 7) {
-					int chance = rand() % 4;
-					if (chance == 0) {
-						gameGrid[i][j] = 0;
-					} else {
-						gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
-					}
-				} else if (i<linesNo - 6) {
-					int chance = rand() % 3;
-					if (gameGrid[i-1][j] == 0 || chance == 0) {
-						gameGrid[i][j] = 0;
-					} else {
-						gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
-					}
-				} else {
+	srand(time(NULL)); //making sure that every time are generated random numbers
+	for(int i=0; i<linesNo; i++) {
+		for(int j=0; j<columnsNo; j++) {
+			if (i<linesNo - 8) {
+				int randNo;
+				do {
+					randNo = rand() % (5 + gameLvl);
+				} while (randNo == 0);
+				gameGrid[i][j] = randNo;
+			} else if (i<linesNo - 7) {
+				int chance = rand() % 4;
+				if (chance == 0) {
 					gameGrid[i][j] = 0;
+				} else {
+					gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
 				}
+			} else if (i<linesNo - 6) {
+				int chance = rand() % 3;
+				if (gameGrid[i-1][j] == 0 || chance == 0) {
+					gameGrid[i][j] = 0;
+				} else {
+					gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
+				}
+			} else {
+				//adding the empty spaces
+				gameGrid[i][j] = 0;
 			}
 		}
 	}
 
 }
 
-void addRow(int level, int gameGrid[40][40], int linesNo, int columnsNo)
+//method that add a row of random balls at every X seconds
+void addRow(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 
-	if (level == 1) {
-		for(int i=linesNo - 1; i>0; i--) {
-			for(int j=0; j<columnsNo; j++) {
-				gameGrid[i][j] = gameGrid[i - 1][j];
-			}
+	//moving the rows with one row below
+	for(int i=linesNo - 1; i>0; i--) {
+		for(int j=0; j<columnsNo; j++) {
+			gameGrid[i][j] = gameGrid[i - 1][j];
 		}
-		srand(time(NULL));
-		for(int i=0; i<columnsNo; i++) {
-			int randNo;
-			do {
-				randNo = rand() % (5 + gameLvl);
-			} while (randNo == 0);
-			gameGrid[0][i] = randNo;
-		}
+	}
+	srand(time(NULL)); //making sure that every time are generated random numbers
+	//adding a new row
+	for(int i=0; i<columnsNo; i++) {
+		int randNo;
+		do {
+			randNo = rand() % (5 + gameLvl);
+		} while (randNo == 0);
+		gameGrid[0][i] = randNo;
 	}
 
 }
 
+//method that generates the ball colors for each lvl
 void generateGameBallColors(sf::Color ballColors[11], int colors)
 {
 	//red
@@ -130,9 +159,10 @@ void generateGameBallColors(sf::Color ballColors[11], int colors)
 	ballColors[10] = sf::Color(0, 0, 0);
 }
 
-int userCharacter = 1;
+//method that draw the character
 void drawCharacter(int type, int characterX, int characterY)
 {
+	//drawing the different types of characters
 	if(userCharacter == 1) {
 		characterBoy[characterAnimation].setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2), 40*characterX);
 		if(spriteToRight) {
@@ -215,10 +245,11 @@ void drawCharacter(int type, int characterX, int characterY)
 		if(characterAnimation == 10) characterAnimation = 0;
 	}
 	
-	sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
-	ballSprite.setScale(0.25, 0.25);
-	ballSprite.setColor(gameBallColors[ballsInHandType - 1]);
-	srand(time(NULL));
+	//draw the blls that are in the user hands
+	sf::Sprite ballSpriteInHand(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
+	ballSpriteInHand.setScale(0.25, 0.25);
+	ballSpriteInHand.setColor(gameBallColors[ballsInHandType - 1]);
+	srand(time(NULL)); //making sure that every time are generated random numbers
 	if(ballsInHandNo > 3) ballsInHandNo = 3;
 	for(int i=ballsInHandNo - 1; i>=0; i--) {
 		int movement;
@@ -227,11 +258,12 @@ void drawCharacter(int type, int characterX, int characterY)
 		} else {
 			movement = 8;
 		}
-		ballSprite.setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2) + movement, 40*characterX - 25 * (i + 1) + 2 * i);
-		window.draw(ballSprite);
+		ballSpriteInHand.setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2) + movement, 40*characterX - 25 * (i + 1) + 2 * i);
+		window.draw(ballSpriteInHand);
 	}
 }
 
+//method that draws the pointers that help us to know: where will the ball fall/which ball to take
 void drawPointers(int characterX, int characterY, int gameGrid[40][40])
 {	
 	sf::CircleShape circle;
@@ -240,9 +272,11 @@ void drawPointers(int characterX, int characterY, int gameGrid[40][40])
 	menuSqr.setSize(sf::Vector2f(100, 100));
 	menuSqr.setScale(0.14, 0.35);
 	if(ballsInHandNo>0) {
+		//in case that we have balls in hand we color the pointers with the balls color
 		menuSqr.setFillColor(gameBallColors[ballsInHandType - 1]);
 		circle.setFillColor(gameBallColors[ballsInHandType - 1]);
 	} else {
+		//otherwise we color them with a dark color
 		menuSqr.setFillColor(sf::Color(43, 43, 43));
 		circle.setFillColor(sf::Color(43, 43, 43));
 	}
@@ -260,6 +294,7 @@ void drawPointers(int characterX, int characterY, int gameGrid[40][40])
 	}
 }
 
+//get the first row where it is a ball and it's on the same column as the character
 int getBallX(int gameGrid[40][40], int characterY, int gameLines)
 {
 	int i = gameLines;
@@ -273,6 +308,7 @@ int getBallX(int gameGrid[40][40], int characterY, int gameLines)
 	return i;
 }
 
+//get the number of balls that are the same and are on the same column
 int getSameBalls(int gameGrid[40][40], int ballY, int ballX)
 {
 	int i = ballX;
@@ -290,6 +326,7 @@ int getSameBalls(int gameGrid[40][40], int ballY, int ballX)
 	return ballsNo;
 }
 
+//droping the balls from the character hands to the game board
 void throwBalls(int gameGrid[40][40], int characterY, int gameLines)
 {
 	int i = gameLines - 1;
@@ -319,6 +356,7 @@ void throwBalls(int gameGrid[40][40], int characterY, int gameLines)
 	}
 }
 
+//getting the balls from the game board
 void getBalls(int gameGrid[40][40], int characterY, int gameLines)
 {
 	int i = gameLines - 1;
@@ -342,6 +380,7 @@ void getBalls(int gameGrid[40][40], int characterY, int gameLines)
 	}
 }
 
+//checking if the game i lost - at least a ball is on the last row
 bool checkGameLost(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 	bool lost = false;
@@ -356,6 +395,7 @@ bool checkGameLost(int gameGrid[40][40], int linesNo, int columnsNo)
 
 }
 
+//get the number of balls that are the same
 int isAStreak(int column, int line, int gameGrid[40][40])
 {
 	int ballsNo = 1;
@@ -374,7 +414,7 @@ int isAStreak(int column, int line, int gameGrid[40][40])
 	return ballsNo;
 }
 
-void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak);
+//deleting the empty space that are within the balls
 void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 	for(int i = 0; i<columnsNo; i++) {
@@ -394,6 +434,7 @@ void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 	}
 }
 
+//check same ball type at the top of the current ball
 void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballX > 0) {
@@ -408,6 +449,7 @@ void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, i
 	}
 }
 
+//check same ball type at the bottom of the current ball
 void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballX < linesNo - 1) {
@@ -422,6 +464,7 @@ void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY
 	}
 }
 
+//check same ball type at the left of the current ball
 void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballY > 0) {
@@ -436,6 +479,7 @@ void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, 
 	}
 }
 
+//check same ball type at the right of the current ball
 void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballY < columnsNo - 1) {
@@ -450,7 +494,7 @@ void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY,
 	}
 }
 
-int lvlScore = 0;
+//remove the balls that needs to be destroyed due to the chain reaction
 void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballType)
 {
 	int score = 0;
@@ -465,6 +509,7 @@ void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballTy
 	lvlScore += score*40;
 }
 
+//detect the balls that are the same and cause chain reaction
 void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak)
 {
 	int ballType = gameGrid[ballX][ballY];
@@ -480,6 +525,12 @@ void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int 
 
 }
 
+//method that checks if a level is unlocked
+bool isLvlUnlocked(int lvl) {
+	return lvl <= lvlUnlocked;
+}
+
+//method that draws the animated background of the game menu
 void drawGameMenuBg()
 {
 	
@@ -549,10 +600,7 @@ void drawGameMenuBg()
 
 }
 
-bool isLvlUnlocked(int lvl) {
-	return lvl <= lvlUnlocked;
-}
-
+//method that draws the game menu
 void drawGameMenu()
 {
 	btnPlayTxt.setString("PLAY");
@@ -685,8 +733,7 @@ void drawGameMenu()
 
 }
 
-int menuSquares = 0, gameLostLines = 0;
-int optionSelected = 0;
+//method that draws the in-game menu (the game menu/end screen)
 void drawInGameMenu()
 {
 	auto mouse_pos = sf::Mouse::getPosition(window);
@@ -839,7 +886,7 @@ void drawInGameMenu()
 	}
 }
 
-sf::Clock inGameClock;
+//method that hides the in-game menu (the game menu/end screen)
 void hideInGameMenu()
 {
 	if(clockGameMenu.getElapsedTime().asMicroseconds() > 250) {
@@ -910,8 +957,7 @@ void hideInGameMenu()
 	}
 }
 
-sf::Color gameLostColors[8], gameWonColors[8];
-bool lvlTargetHit;
+//method that draws the end screen
 void drawGameLost()
 {
 	auto mouse_pos = sf::Mouse::getPosition(window);
@@ -1013,8 +1059,7 @@ void drawGameLost()
 	}
 }
 
-sf::Font font1(zfSFML.loadFont("Assets/fonts/", "big_space", "otf"));
-MD2 btnLvl;
+//method that draws the select lvl screen
 void drawSelectLvl()
 {
 
@@ -1089,8 +1134,7 @@ void drawSelectLvl()
 	
 }
 
-sf::Text speedIncreased;
-int inGameEventType = 1;
+//method that shows in game notifications
 void drawGameEvent()
 {
 	sf::RectangleShape gameEventsHolder;
@@ -1125,6 +1169,7 @@ void drawGameEvent()
 	}
 }
 
+//method that draws the how to play screen
 void drawHowToScreen()
 {
 
@@ -1163,6 +1208,7 @@ void drawHowToScreen()
 
 }
 
+//method that draws the option screen - the one where you can choose your character
 void drawOptionsScreen()
 {
 
@@ -1297,24 +1343,40 @@ void drawOptionsScreen()
 
 int main()
 {
-	int rangeSec;
+	//setting the window frame limit - 30
+	window.setFramerateLimit(30);
+
+	//setting the game window icon
 	sf::Image icon;
 	icon.loadFromFile("Assets/zeoflow_logo.png");
 	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
+	//initialise the array that contains each level target
 	for(int i=0; i<6; i++) {
 		finishLvlScore[i] = 3500 + i*750;
 	}
 
-	window.setFramerateLimit(30);
+	//initialise the array that contains the colors for the end screen when you are loosing - red colors
+	gameLostColors[0] = sf::Color(238, 63, 28);
+	gameLostColors[1] = sf::Color(238, 63, 28);
+	gameLostColors[2] = sf::Color(214, 51, 18);
+	gameLostColors[3] = sf::Color(186, 41, 12);
+	gameLostColors[4] = sf::Color(153, 31, 7);
+	gameLostColors[5] = sf::Color(114, 22, 3);
+	gameLostColors[6] = sf::Color(66, 13, 2);
+	gameLostColors[7] = sf::Color(43, 43, 43);
+
+	//initialise the array that contains the colors for the end screen when you are winning - green colors
+	gameWonColors[0] = sf::Color(139, 195, 74);
+	gameWonColors[1] = sf::Color(112, 169, 46);
+	gameWonColors[2] = sf::Color(87, 142, 24);
+	gameWonColors[3] = sf::Color(67, 106, 21);
+	gameWonColors[4] = sf::Color(56, 95, 10);
+	gameWonColors[5] = sf::Color(47, 74, 15);
+	gameWonColors[6] = sf::Color(50, 70, 27);
+	gameWonColors[7] = sf::Color(43, 43, 43);
 	
-	sf::Sprite backgroundSprite(zfSFML.loadSpriteFromTexture("Assets/", "background", "png"));
-	sf::Sprite bgMenu(zfSFML.loadSpriteFromTexture("Assets/", "bg3", "png"));
-	sf::Sprite zeoFlowSprite(zfSFML.loadSpriteFromTexture("Assets/", "zeoflow_logo", "png"));
-	sf::Sprite portal(zfSFML.loadSpriteFromTexture("Assets/", "portal", "png"));
-
-	ballSprite.setScale(0.4, 0.4);
-
+	//set the font for each variable of text type
 	speedIncreased.setFont(font1);
 	scoreText.setFont(font1);
 	scoreTitle.setFont(font1);
@@ -1329,27 +1391,23 @@ int main()
 	btnPlayTxt.setFont(font1);
 	btnHowToTxt.setFont(font1);
 
-	gameLostColors[0] = sf::Color(238, 63, 28);
-	gameLostColors[1] = sf::Color(238, 63, 28);
-	gameLostColors[2] = sf::Color(214, 51, 18);
-	gameLostColors[3] = sf::Color(186, 41, 12);
-	gameLostColors[4] = sf::Color(153, 31, 7);
-	gameLostColors[5] = sf::Color(114, 22, 3);
-	gameLostColors[6] = sf::Color(66, 13, 2);
-	gameLostColors[7] = sf::Color(43, 43, 43);
-
-	gameWonColors[0] = sf::Color(139, 195, 74);
-	gameWonColors[1] = sf::Color(112, 169, 46);
-	gameWonColors[2] = sf::Color(87, 142, 24);
-	gameWonColors[3] = sf::Color(67, 106, 21);
-	gameWonColors[4] = sf::Color(56, 95, 10);
-	gameWonColors[5] = sf::Color(47, 74, 15);
-	gameWonColors[6] = sf::Color(50, 70, 27);
-	gameWonColors[7] = sf::Color(43, 43, 43);
-
+	//declare the game board
+	//the board where will appear the balls
 	sf::RectangleShape gameHolder;
 	gameHolder.setOutlineThickness(10);
 
+	//set the ball scale - 40x40 px
+	ballSprite.setScale(0.4, 0.4);
+
+	//load the sprites using the ZeoFlow Library
+	sf::Sprite bgMenu(zfSFML.loadSpriteFromTexture("Assets/", "bg3", "png"));
+	sf::Sprite zeoFlowSprite(zfSFML.loadSpriteFromTexture("Assets/", "zeoflow_logo", "png")); //the zeoflow logo - for splash screen
+	sf::Sprite portal(zfSFML.loadSpriteFromTexture("Assets/", "portal", "png")); //the portal that is used at the boundaries of the game board
+	sf::Sprite backgroundSprite(zfSFML.loadSpriteFromTexture("Assets/", "background", "png")); //in game background
+	backgroundSprite = zfSFML.formatSpriteForBackground(backgroundSprite); //foramting the bg 
+
+	//initialise the arrays that contains the images of different characters
+	//helps us to animate them
 	string boyCharacter = "idle_";
 	for(int i=0; i<15; i++) {
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/boy/", boyCharacter + to_string(i + 1), "png"));
@@ -1401,22 +1459,24 @@ int main()
 		menuGlideNinja[i] = characterIdle;
 	}
 
-	backgroundSprite = zfSFML.formatSpriteForBackground(backgroundSprite);
+	int gameGrid[40][40]; //the array that store the game board
+	int clockState = 0; //helps us to reset the in-game clock at the first launch
+	int characterX, characterY; //the x and y coordinates for the character
 
-	int clockState = 0;
-	int gameGrid[40][40];
-	
+	int rangeSec; //the X seconds when we need to add a new row
+	bool rowGenerated = false; //helps us to add a new row
+
+	//the background for the splash screen
 	sf::RectangleShape splashScreenBg;
 	splashScreenBg.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
 	sf::Color color(16, 16, 16);
 	splashScreenBg.setFillColor(color);
 	
-	int characterX, characterY;
-	bool rowGenerated = false;
-
+	//the loop that draws the game
     while (window.isOpen())
     {
         sf::Event event;
+		//the loop that checks for different inputs
         while (window.pollEvent(event))
         {
 			if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape) {
@@ -1467,15 +1527,18 @@ int main()
 			}
 		}
 
+		//clear the previous frame window and draw the current frame window
         window.clear();
 
 		if (clockState == 0)
 		{
+			//first game launch - reset the clock
 			inGameClock.restart();
 			clockState++;
 		}
 		if (currentScreen == SCENE_SPLASH_SCREEN)
 		{
+			//show the splash screen
 			float sec = inGameClock.getElapsedTime().asSeconds();
 			if (sec < 2.0)
 			{
@@ -1486,17 +1549,21 @@ int main()
 			} 
 			else
 			{
+				//after 2 seconds make the splash screen to dissapear
 				gameGridGenerated = false;
 				currentScreen = SCENE_GAME_MENU_SCREEN;
 				clockRefreshRate.restart();
 			}
 		} else if(currentScreen == SCENE_GAME_SCREEN) {
+
 			window.draw(backgroundSprite);
 			if (!gameGridGenerated) {
+
+				//the game lvl was just created so we need to initiate all the things that helps us to draw the game lvl
 				gameGridGenerated = true;
 				levelColumns = 5 + gameLvl * 2;
 				levelLines = 12;
-				generateGameGrid(1, gameGrid, levelLines, levelColumns);
+				generateGameGrid(gameGrid, levelLines, levelColumns);
 				generateGameBallColors(gameBallColors, 10);
 				gameLost = false;
 				lvlScore = 0;
@@ -1512,7 +1579,10 @@ int main()
 				} else {
 					lvlTargetHit = true;
 				}
+
 			} else {
+
+				//set the 'x' seconds - the seconds that represents wehn to add a new row
 				int sec = (int) inGameClock.getElapsedTime().asSeconds();
 				if(lvlScore < 1000) {
 					rangeSec = 7 + gameLvl;
@@ -1545,15 +1615,19 @@ int main()
 					}
 					rangeSec = 3 + gameLvl;
 				}
+
+				//add a new row
 				if(sec % rangeSec == 0 && !rowGenerated) {
 					if(!gameLost && menuSquares == 0) {
-						addRow(1, gameGrid, levelLines, levelColumns);
+						addRow(gameGrid, levelLines, levelColumns);
 					}
 					rowGenerated = true;
 				} else if (sec % rangeSec == rangeSec - 1) {
 					inGameClock.restart();
 					rowGenerated = false;
 				}
+
+				//check if the game is lost and change the color of the game holder
 				if(gameLost)  {
 					if(lvlTargetHit && lvlScore > finishLvlScore[gameLvl - 1]) {
 						gameHolder.setOutlineColor(gameWonColors[gameLostLines]);
@@ -1567,19 +1641,24 @@ int main()
 				}
 				gameHolder.setSize(sf::Vector2f(objectSize * levelColumns + 3, objectSize * levelLines + 3));
 				gameHolder.setPosition((window.getSize().x/2 - objectSize*levelColumns/2) + 1, 11);
-				window.draw(gameHolder);
+				window.draw(gameHolder); //draw the game holder
+
 				//draw game pieces
 				for(int i=0; i<levelLines; i++) {
 					for(int j=0; j<levelColumns; j++) {
 						if(gameGrid[i][j] != 0) {
-							int ballType = gameGrid[i][j];
-							ballSprite.setColor(gameBallColors[ballType - 1]);
-							ballSprite.setPosition(objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 10);
-							window.draw(ballSprite);
+							int ballType = gameGrid[i][j]; //get the ball type
+							ballSprite.setColor(gameBallColors[ballType - 1]); //set the ball color
+							ballSprite.setPosition(objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 10); //set ball position
+							window.draw(ballSprite); //draw the ball
 						}
 					}
 				}
+
+				//draw the pointers
 				if(!gameLost && menuSquares == 0) drawPointers(characterX, characterY, gameGrid);
+
+				//draw different screens in game
 				if(gameLost) {
 					drawGameLost();
 				} else {
@@ -1589,6 +1668,8 @@ int main()
 						hideInGameMenu();
 					}
 				}
+
+				//check if at least one ball is on the last row - game ends
 				if(checkGameLost(gameGrid, levelLines, levelColumns) && !gameLost) {
 					if(lvlScore >= finishLvlScore[gameLvl - 1] && lvlUnlocked<=gameLvl) {
 						lvlUnlocked = gameLvl + 1;
@@ -1603,8 +1684,11 @@ int main()
 					gameEvent = true;
 					inGameEventType = 2;
 				}
+
+				//draw the suer character
 				drawCharacter(0, characterX, characterY);
 
+				//draw the portals from the game board boundaries
 				portal.setScale(0.2, 0.2);
 				portal.setPosition(objectSize*-2 + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*(characterX - 1));
 				if(!gameLost) window.draw(portal);
@@ -1612,6 +1696,7 @@ int main()
 				portal.setPosition(objectSize*levelColumns + (window.getSize().x/2 - objectSize*levelColumns/2) + 13, objectSize*(characterX - 1));
 				if(!gameLost) window.draw(portal);
 
+				//show the score if there is no in-game menu
 				if(menuSquares == 0 && !gameLost) {
 					scoreText.setString("Score:");
 					scoreText.setPosition(objectSize*levelColumns + 50 + (window.getSize().x/2 - objectSize*levelColumns/2), 10);
@@ -1627,23 +1712,40 @@ int main()
 					window.draw(scoreTitle);
 				}
 
+				//draw the game event (in-game notification)
 				if(gameEvent) {
 					drawGameEvent();
 				}
 
 			}
 		} else if(currentScreen == SCENE_GAME_MENU_SCREEN) {
+			
+			//draw the game menu screen
 			window.draw(bgMenu);
 			drawGameMenuBg();
 			drawGameMenu();
+
 		} else if(currentScreen == SCENE_OPTIONS_SCREEN) {
+
+			//draw the screen that contains all the characters
 			drawOptionsScreen();
+
 		} else if(currentScreen == SCENE_SELECT_LVL) {
+
+			//draw the screen that contains all the levels
+			//from here we can choose which level we want to play
 			drawSelectLvl();
+
 		} else if(currentScreen == SCENE_HOW_TO_SCREEN) {
+
+			//draw the screen that contains the 'how to' about the game
 			drawHowToScreen();
+
 		}
+
+		//display the current frame
         window.display();
+		
 	}
 
 	getchar();
