@@ -1748,7 +1748,8 @@ int main()
 		
 	}
 
-	getchar();
+	//for closing the debug window when the game window is closed
+	//getchar();
 
 	return 0;
 }
