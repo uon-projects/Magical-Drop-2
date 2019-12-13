@@ -43,7 +43,7 @@ sf::Color gameLostColors[8], gameWonColors[8]; //declaring the arrays that conti
 
 sf::Font font1(zfSFML.loadFont("Assets/fonts/", "big_space", "otf")); //declaring the font that is used by text
 
-//declring all the variables of text type that are used in the game
+//declaring all the variables of text type that are used in the game
 sf::Text scoreText, scoreTitle, inGameOptions, inGameExit, inGameResume, exitTitle, exitAfirmative, exitNegative, exitContent,
 	btnPlayTxt, btnCharacterTxt, btnHowToTxt, speedIncreased;
 
