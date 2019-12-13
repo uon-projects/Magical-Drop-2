@@ -124,7 +124,7 @@ void generateGameBallColors(sf::Color ballColors[11], int colors)
 	ballColors[8] = sf::Color(255,160,0);
 	//brown
 	ballColors[9] = sf::Color(62,39,35);
-	//null
+	//black - not in use
 	ballColors[10] = sf::Color(0, 0, 0);
 }
 
