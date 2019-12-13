@@ -1654,7 +1654,11 @@ int main()
 						}
 					}
 				}
+
+				//draw the pointers
 				if(!gameLost && menuSquares == 0) drawPointers(characterX, characterY, gameGrid);
+
+				//draw different screens in game
 				if(gameLost) {
 					drawGameLost();
 				} else {
@@ -1664,6 +1668,8 @@ int main()
 						hideInGameMenu();
 					}
 				}
+
+				//check if at least one ball is on the last row - game ends
 				if(checkGameLost(gameGrid, levelLines, levelColumns) && !gameLost) {
 					if(lvlScore >= finishLvlScore[gameLvl - 1] && lvlUnlocked<=gameLvl) {
 						lvlUnlocked = gameLvl + 1;
@@ -1678,8 +1684,11 @@ int main()
 					gameEvent = true;
 					inGameEventType = 2;
 				}
+
+				//draw the suer character
 				drawCharacter(0, characterX, characterY);
 
+				//draw the portals from the game board boundaries
 				portal.setScale(0.2, 0.2);
 				portal.setPosition(objectSize*-2 + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*(characterX - 1));
 				if(!gameLost) window.draw(portal);
@@ -1687,6 +1696,7 @@ int main()
 				portal.setPosition(objectSize*levelColumns + (window.getSize().x/2 - objectSize*levelColumns/2) + 13, objectSize*(characterX - 1));
 				if(!gameLost) window.draw(portal);
 
+				//show the score if there is no in-game menu
 				if(menuSquares == 0 && !gameLost) {
 					scoreText.setString("Score:");
 					scoreText.setPosition(objectSize*levelColumns + 50 + (window.getSize().x/2 - objectSize*levelColumns/2), 10);
@@ -1702,23 +1712,40 @@ int main()
 					window.draw(scoreTitle);
 				}
 
+				//draw the game event (in-game notification)
 				if(gameEvent) {
 					drawGameEvent();
 				}
 
 			}
 		} else if(currentScreen == SCENE_GAME_MENU_SCREEN) {
+			
+			//draw the game menu screen
 			window.draw(bgMenu);
 			drawGameMenuBg();
 			drawGameMenu();
+
 		} else if(currentScreen == SCENE_OPTIONS_SCREEN) {
+
+			//draw the screen that contains all the characters
 			drawOptionsScreen();
+
 		} else if(currentScreen == SCENE_SELECT_LVL) {
+
+			//draw the screen that contains all the levels
+			//from here we can choose which level we want to play
 			drawSelectLvl();
+
 		} else if(currentScreen == SCENE_HOW_TO_SCREEN) {
+
+			//draw the screen that contains the 'how to' about the game
 			drawHowToScreen();
+
 		}
+
+		//display the current frame
         window.display();
+		
 	}
 
 	getchar();
