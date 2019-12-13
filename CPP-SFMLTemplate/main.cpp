@@ -245,6 +245,7 @@ void drawCharacter(int type, int characterX, int characterY)
 		if(characterAnimation == 10) characterAnimation = 0;
 	}
 	
+	//draw the blls that are in the user hands
 	sf::Sprite ballSpriteInHand(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
 	ballSpriteInHand.setScale(0.25, 0.25);
 	ballSpriteInHand.setColor(gameBallColors[ballsInHandType - 1]);
@@ -262,6 +263,7 @@ void drawCharacter(int type, int characterX, int characterY)
 	}
 }
 
+//method that draws the pointers that help us to know: where will the ball fall/which ball to take
 void drawPointers(int characterX, int characterY, int gameGrid[40][40])
 {	
 	sf::CircleShape circle;
