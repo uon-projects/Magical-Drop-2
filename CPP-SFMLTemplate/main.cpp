@@ -1159,6 +1159,7 @@ void drawHowToScreen()
 	inGameExit.setOutlineThickness(1);
 	inGameExit.setFillColor(sf::Color(198, 198, 198));
 	window.draw(inGameExit);
+	inGameExit.setOutlineThickness(0);
 
 }
 
