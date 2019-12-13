@@ -102,6 +102,7 @@ void generateGameGrid(int gameGrid[40][40], int linesNo, int columnsNo)
 					gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
 				}
 			} else {
+				//adding the empty spaces
 				gameGrid[i][j] = 0;
 			}
 		}
@@ -109,27 +110,29 @@ void generateGameGrid(int gameGrid[40][40], int linesNo, int columnsNo)
 
 }
 
-void addRow(int level, int gameGrid[40][40], int linesNo, int columnsNo)
+//method that add a row of random balls at every X seconds
+void addRow(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 
-	if (level == 1) {
-		for(int i=linesNo - 1; i>0; i--) {
-			for(int j=0; j<columnsNo; j++) {
-				gameGrid[i][j] = gameGrid[i - 1][j];
-			}
+	//moving the rows with one row below
+	for(int i=linesNo - 1; i>0; i--) {
+		for(int j=0; j<columnsNo; j++) {
+			gameGrid[i][j] = gameGrid[i - 1][j];
 		}
-		srand(time(NULL)); //making sure that every time are generated random numbers
-		for(int i=0; i<columnsNo; i++) {
-			int randNo;
-			do {
-				randNo = rand() % (5 + gameLvl);
-			} while (randNo == 0);
-			gameGrid[0][i] = randNo;
-		}
+	}
+	srand(time(NULL)); //making sure that every time are generated random numbers
+	//adding a new row
+	for(int i=0; i<columnsNo; i++) {
+		int randNo;
+		do {
+			randNo = rand() % (5 + gameLvl);
+		} while (randNo == 0);
+		gameGrid[0][i] = randNo;
 	}
 
 }
 
+//method that generates the ball colors for each lvl
 void generateGameBallColors(sf::Color ballColors[11], int colors)
 {
 	//red
@@ -156,8 +159,10 @@ void generateGameBallColors(sf::Color ballColors[11], int colors)
 	ballColors[10] = sf::Color(0, 0, 0);
 }
 
+//method that draw the character
 void drawCharacter(int type, int characterX, int characterY)
 {
+	//drawing the different types of characters
 	if(userCharacter == 1) {
 		characterBoy[characterAnimation].setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2), 40*characterX);
 		if(spriteToRight) {
@@ -240,9 +245,9 @@ void drawCharacter(int type, int characterX, int characterY)
 		if(characterAnimation == 10) characterAnimation = 0;
 	}
 	
-	sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
-	ballSprite.setScale(0.25, 0.25);
-	ballSprite.setColor(gameBallColors[ballsInHandType - 1]);
+	sf::Sprite ballSpriteInHand(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
+	ballSpriteInHand.setScale(0.25, 0.25);
+	ballSpriteInHand.setColor(gameBallColors[ballsInHandType - 1]);
 	srand(time(NULL)); //making sure that every time are generated random numbers
 	if(ballsInHandNo > 3) ballsInHandNo = 3;
 	for(int i=ballsInHandNo - 1; i>=0; i--) {
@@ -252,8 +257,8 @@ void drawCharacter(int type, int characterX, int characterY)
 		} else {
 			movement = 8;
 		}
-		ballSprite.setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2) + movement, 40*characterX - 25 * (i + 1) + 2 * i);
-		window.draw(ballSprite);
+		ballSpriteInHand.setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2) + movement, 40*characterX - 25 * (i + 1) + 2 * i);
+		window.draw(ballSpriteInHand);
 	}
 }
 
@@ -1562,7 +1567,7 @@ int main()
 				}
 				if(sec % rangeSec == 0 && !rowGenerated) {
 					if(!gameLost && menuSquares == 0) {
-						addRow(1, gameGrid, levelLines, levelColumns);
+						addRow(gameGrid, levelLines, levelColumns);
 					}
 					rowGenerated = true;
 				} else if (sec % rangeSec == rangeSec - 1) {
