@@ -41,11 +41,22 @@ int stateNinja1 = 0, stateNinja2 = 3, stateNinja3 = 6, stateKnight1 = 0, stateKn
 	stateJack1 = 0, stateJack2 = 0;
 sf::Clock clockRefreshRate, clockGameMenu, inGameEvents;
 bool gameEvent;
+int lvlScore = 0;
+int menuSquares = 0, gameLostLines = 0;
+int optionSelected = 0;
+sf::Color gameLostColors[8], gameWonColors[8];
+bool lvlTargetHit;
+sf::Font font1(zfSFML.loadFont("Assets/fonts/", "big_space", "otf"));
+MD2 btnLvl;
+sf::Text speedIncreased;
+int inGameEventType = 1;
+int userCharacter = 1;
 
 void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
+void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak);
 
 void generateGameGrid(int level, int gameGrid[40][40], int linesNo, int columnsNo)
 {
@@ -130,7 +141,6 @@ void generateGameBallColors(sf::Color ballColors[11], int colors)
 	ballColors[10] = sf::Color(0, 0, 0);
 }
 
-int userCharacter = 1;
 void drawCharacter(int type, int characterX, int characterY)
 {
 	if(userCharacter == 1) {
@@ -374,7 +384,6 @@ int isAStreak(int column, int line, int gameGrid[40][40])
 	return ballsNo;
 }
 
-void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak);
 void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 	for(int i = 0; i<columnsNo; i++) {
@@ -450,7 +459,6 @@ void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY,
 	}
 }
 
-int lvlScore = 0;
 void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballType)
 {
 	int score = 0;
@@ -685,8 +693,6 @@ void drawGameMenu()
 
 }
 
-int menuSquares = 0, gameLostLines = 0;
-int optionSelected = 0;
 void drawInGameMenu()
 {
 	auto mouse_pos = sf::Mouse::getPosition(window);
@@ -910,8 +916,6 @@ void hideInGameMenu()
 	}
 }
 
-sf::Color gameLostColors[8], gameWonColors[8];
-bool lvlTargetHit;
 void drawGameLost()
 {
 	auto mouse_pos = sf::Mouse::getPosition(window);
@@ -1013,8 +1017,6 @@ void drawGameLost()
 	}
 }
 
-sf::Font font1(zfSFML.loadFont("Assets/fonts/", "big_space", "otf"));
-MD2 btnLvl;
 void drawSelectLvl()
 {
 
@@ -1089,8 +1091,6 @@ void drawSelectLvl()
 	
 }
 
-sf::Text speedIncreased;
-int inGameEventType = 1;
 void drawGameEvent()
 {
 	sf::RectangleShape gameEventsHolder;
