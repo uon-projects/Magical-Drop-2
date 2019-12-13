@@ -3,6 +3,7 @@
 #include <string>
 #include "ZeoFlow_SFML.h"
 #include "MD2.h"
+#include <fstream>
 
 //Compiler Directives
 using namespace std;
@@ -13,6 +14,7 @@ const int SCENE_GAME_MENU_SCREEN = 1;
 const int SCENE_GAME_SCREEN = 2;
 const int SCENE_OPTIONS_SCREEN = 3;
 const int SCENE_SELECT_LVL = 4;
+const int SCENE_HOW_TO_SCREEN = 5;
 
 int finishLvlScore[6];
 int gameLvl;
@@ -667,7 +669,7 @@ void drawGameMenu()
 		btnCharactersL3.setPosition(695, 185);
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			currentScreen = SCENE_OPTIONS_SCREEN;
+			currentScreen = SCENE_HOW_TO_SCREEN;
 			clockRefreshRate.restart();
 		}
 	} else {
@@ -1121,6 +1123,43 @@ void drawGameEvent()
 	} else {
 		gameEvent = false;
 	}
+}
+
+void drawHowToScreen()
+{
+
+	sf::RectangleShape selectLvlBg;
+
+	selectLvlBg.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
+	selectLvlBg.setFillColor(sf::Color(43, 43, 43));
+	window.draw(selectLvlBg);
+
+	inGameExit.setString("BACK");
+	inGameExit.setPosition(window.getSize().x/2, 20);
+	inGameExit.setCharacterSize(26);
+	sf::IntRect btnCharactersRect(inGameExit.getPosition().x - inGameExit.getGlobalBounds().width / 2,
+		inGameExit.getPosition().y, inGameExit.getGlobalBounds().width, inGameExit.getGlobalBounds().height * 2);
+	if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) {
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			currentScreen = SCENE_GAME_MENU_SCREEN;
+		}
+		inGameExit.setFillColor(sf::Color(255, 255, 255));
+	} else {
+		inGameExit.setFillColor(sf::Color(198, 198, 198));
+	}
+	inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
+	window.draw(inGameExit);
+
+	ifstream howTo("howTo.txt");
+	string content((istreambuf_iterator<char>(howTo)), (istreambuf_iterator<char>()));
+	inGameExit.setString(content);
+	inGameExit.setPosition(50, 70);
+	inGameExit.setCharacterSize(16);
+	inGameExit.setOutlineColor(sf::Color::Black);
+	inGameExit.setOutlineThickness(1);
+	inGameExit.setFillColor(sf::Color(198, 198, 198));
+	window.draw(inGameExit);
+
 }
 
 void drawOptionsScreen()
@@ -1600,6 +1639,8 @@ int main()
 			drawOptionsScreen();
 		} else if(currentScreen == SCENE_SELECT_LVL) {
 			drawSelectLvl();
+		} else if(currentScreen == SCENE_HOW_TO_SCREEN) {
+			drawHowToScreen();
 		}
         window.display();
 	}
