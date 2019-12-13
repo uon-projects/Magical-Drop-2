@@ -62,7 +62,7 @@ sf::Sprite characterBoy[15], characterGirl[16], characterJack[10], characterNinj
 sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png")); //the ball sprite
 
 //clock variables that makes the game more realistic
-sf::Clock clockRefreshRate, clockGameMenu, inGameEvents;
+sf::Clock clockRefreshRate, clockGameMenu, inGameEvents, inGameClock;
 
 //declaring the method with its definition only for accesing each other from within
 //methods used for creating the chain reaction
@@ -272,9 +272,11 @@ void drawPointers(int characterX, int characterY, int gameGrid[40][40])
 	menuSqr.setSize(sf::Vector2f(100, 100));
 	menuSqr.setScale(0.14, 0.35);
 	if(ballsInHandNo>0) {
+		//in case that we have balls in hand we color the pointers with the balls color
 		menuSqr.setFillColor(gameBallColors[ballsInHandType - 1]);
 		circle.setFillColor(gameBallColors[ballsInHandType - 1]);
 	} else {
+		//otherwise we color them with a dark color
 		menuSqr.setFillColor(sf::Color(43, 43, 43));
 		circle.setFillColor(sf::Color(43, 43, 43));
 	}
@@ -292,6 +294,7 @@ void drawPointers(int characterX, int characterY, int gameGrid[40][40])
 	}
 }
 
+//get the first row where it is a ball and it's on the same column as the character
 int getBallX(int gameGrid[40][40], int characterY, int gameLines)
 {
 	int i = gameLines;
@@ -305,6 +308,7 @@ int getBallX(int gameGrid[40][40], int characterY, int gameLines)
 	return i;
 }
 
+//get the number of balls that are the same and are on the same column
 int getSameBalls(int gameGrid[40][40], int ballY, int ballX)
 {
 	int i = ballX;
@@ -322,6 +326,7 @@ int getSameBalls(int gameGrid[40][40], int ballY, int ballX)
 	return ballsNo;
 }
 
+//droping the balls from the character hands to the game board
 void throwBalls(int gameGrid[40][40], int characterY, int gameLines)
 {
 	int i = gameLines - 1;
@@ -351,6 +356,7 @@ void throwBalls(int gameGrid[40][40], int characterY, int gameLines)
 	}
 }
 
+//getting the balls from the game board
 void getBalls(int gameGrid[40][40], int characterY, int gameLines)
 {
 	int i = gameLines - 1;
@@ -374,6 +380,7 @@ void getBalls(int gameGrid[40][40], int characterY, int gameLines)
 	}
 }
 
+//checking if the game i lost - at least a ball is on the last row
 bool checkGameLost(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 	bool lost = false;
@@ -388,6 +395,7 @@ bool checkGameLost(int gameGrid[40][40], int linesNo, int columnsNo)
 
 }
 
+//get the number of balls that are the same
 int isAStreak(int column, int line, int gameGrid[40][40])
 {
 	int ballsNo = 1;
@@ -406,6 +414,7 @@ int isAStreak(int column, int line, int gameGrid[40][40])
 	return ballsNo;
 }
 
+//deleting the empty space that are within the balls
 void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 	for(int i = 0; i<columnsNo; i++) {
@@ -425,6 +434,7 @@ void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 	}
 }
 
+//check same ball type at the top of the current ball
 void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballX > 0) {
@@ -439,6 +449,7 @@ void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, i
 	}
 }
 
+//check same ball type at the bottom of the current ball
 void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballX < linesNo - 1) {
@@ -453,6 +464,7 @@ void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY
 	}
 }
 
+//check same ball type at the left of the current ball
 void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballY > 0) {
@@ -467,6 +479,7 @@ void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, 
 	}
 }
 
+//check same ball type at the right of the current ball
 void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballY < columnsNo - 1) {
@@ -481,6 +494,7 @@ void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY,
 	}
 }
 
+//remove the balls that needs to be destroyed due to the chain reaction
 void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballType)
 {
 	int score = 0;
@@ -495,6 +509,7 @@ void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballTy
 	lvlScore += score*40;
 }
 
+//detect the balls that are the same and cause chain reaction
 void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak)
 {
 	int ballType = gameGrid[ballX][ballY];
@@ -510,6 +525,12 @@ void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int 
 
 }
 
+//method that checks if a level is unlocked
+bool isLvlUnlocked(int lvl) {
+	return lvl <= lvlUnlocked;
+}
+
+//method that draws the animated background of the game menu
 void drawGameMenuBg()
 {
 	
@@ -579,10 +600,7 @@ void drawGameMenuBg()
 
 }
 
-bool isLvlUnlocked(int lvl) {
-	return lvl <= lvlUnlocked;
-}
-
+//method that draws the game menu
 void drawGameMenu()
 {
 	btnPlayTxt.setString("PLAY");
@@ -715,6 +733,7 @@ void drawGameMenu()
 
 }
 
+//method that draws the in-game menu (the game menu/end screen)
 void drawInGameMenu()
 {
 	auto mouse_pos = sf::Mouse::getPosition(window);
@@ -867,7 +886,7 @@ void drawInGameMenu()
 	}
 }
 
-sf::Clock inGameClock;
+//method that hides the in-game menu (the game menu/end screen)
 void hideInGameMenu()
 {
 	if(clockGameMenu.getElapsedTime().asMicroseconds() > 250) {
@@ -938,6 +957,7 @@ void hideInGameMenu()
 	}
 }
 
+//method that draws the end screen
 void drawGameLost()
 {
 	auto mouse_pos = sf::Mouse::getPosition(window);
@@ -1039,6 +1059,7 @@ void drawGameLost()
 	}
 }
 
+//method that draws the select lvl screen
 void drawSelectLvl()
 {
 
@@ -1113,6 +1134,7 @@ void drawSelectLvl()
 	
 }
 
+//method that shows in game notifications
 void drawGameEvent()
 {
 	sf::RectangleShape gameEventsHolder;
@@ -1147,6 +1169,7 @@ void drawGameEvent()
 	}
 }
 
+//method that draws the how to play screen
 void drawHowToScreen()
 {
 
@@ -1185,6 +1208,7 @@ void drawHowToScreen()
 
 }
 
+//method that draws the option screen - the one where you can choose your character
 void drawOptionsScreen()
 {
 
