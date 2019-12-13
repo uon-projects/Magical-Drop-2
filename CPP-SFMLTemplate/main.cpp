@@ -1,93 +1,108 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <fstream>
 #include "ZeoFlow_SFML.h"
 #include "MD2.h"
-#include <fstream>
 
 //Compiler Directives
 using namespace std;
 using namespace zeoFlow;
 
+ZeoFlow_SFML zfSFML; //declaring a variable of ZeoFlow_SFML type - help us to draw the images easier
+MD2 btnLvl; //declaring a variable of MD2 type - help us to draw the buttons
+
+sf::RenderWindow window(sf::VideoMode(800, 500), "Magical Drop 2"); //the game screen
+
+//declaring the value for each screen that can be found in game
 const int SCENE_SPLASH_SCREEN = 0;
 const int SCENE_GAME_MENU_SCREEN = 1;
 const int SCENE_GAME_SCREEN = 2;
 const int SCENE_OPTIONS_SCREEN = 3;
 const int SCENE_SELECT_LVL = 4;
 const int SCENE_HOW_TO_SCREEN = 5;
-
-int finishLvlScore[6];
-int gameLvl;
-sf::Color gameBallColors[10];
-int lvlUnlocked = 1;
-sf::Text scoreText, scoreTitle, inGameOptions, inGameExit, inGameResume, exitTitle, exitAfirmative, exitNegative, exitContent,
-	btnPlayTxt, btnCharacterTxt, btnHowToTxt;
-sf::RenderWindow window(sf::VideoMode(800, 500), "Magical Drop 2");
-
-bool showMenu = false, gameGridGenerated = false, gridGeneratedEffectShow;
-ZeoFlow_SFML zfSFML;
-bool ballsStreak, gameLost;
-int ballsInHandNo = 0, ballsInHandType = 0;
-int levelLines, levelColumns;
-const int objectSize = 35;
-int characterAnimation = 0;
-sf::Sprite characterBoy[15], characterGirl[16], characterJack[10], characterNinja[10], menuWalkBoy[15], menuWalkGirl[20], menuRunJack[8], menuSlideJack[10], menuIdleKnight[10],
-	menuGlideNinja[10];
-bool spriteToRight = true;
-sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
-int currentScreen = SCENE_SPLASH_SCREEN;
-
+const int objectSize = 35; //the ball size
+int currentScreen = SCENE_SPLASH_SCREEN; //the current screen
+int lvlUnlocked = 1; //variable that store the number of unlocked levels
+int gameLvl; //variable that store the current level
+int inGameEventType = 1; //variable storing the type of notification that appear in game
+int userCharacter = 1; //here we store the character that the user choose (by default is the first character - the boy)
+int finishLvlScore[6]; //array that stores each level target
+int characterAnimation = 0; //the current sprite that makes the animation of the character - while playing
+//the current sprite of the characters that appear in game menu
 int stateNinja1 = 0, stateNinja2 = 3, stateNinja3 = 6, stateKnight1 = 0, stateKnight2 = 5, stateBoy = 0, stateGirl = 0,
 	stateJack1 = 0, stateJack2 = 0;
-sf::Clock clockRefreshRate, clockGameMenu, inGameEvents;
-bool gameEvent;
-int lvlScore = 0;
-int menuSquares = 0, gameLostLines = 0;
-int optionSelected = 0;
-sf::Color gameLostColors[8], gameWonColors[8];
-bool lvlTargetHit;
-sf::Font font1(zfSFML.loadFont("Assets/fonts/", "big_space", "otf"));
-MD2 btnLvl;
-sf::Text speedIncreased;
-int inGameEventType = 1;
-int userCharacter = 1;
+int lvlScore = 0; //the current score
+int menuSquares = 0, gameLostLines = 0; //declaring the items that helps to animate the menu/end screen while playing
+int optionSelected = 0; //helps us to know which option was selected from the in game menu/end screen
+int ballsInHandNo = 0, ballsInHandType = 0; //store the data about the ball(s) that are in the character hands
+int levelLines, levelColumns; //the total number of lines and columns for the current level
 
+sf::Color gameBallColors[10]; //declaring the array that contains the colors that are used to fill the balls
+sf::Color gameLostColors[8], gameWonColors[8]; //declaring the arrays that contins the colors for the end screen
+
+sf::Font font1(zfSFML.loadFont("Assets/fonts/", "big_space", "otf")); //declaring the font that is used by text
+
+//declring all the variables of text type that are used in the game
+sf::Text scoreText, scoreTitle, inGameOptions, inGameExit, inGameResume, exitTitle, exitAfirmative, exitNegative, exitContent,
+	btnPlayTxt, btnCharacterTxt, btnHowToTxt, speedIncreased;
+
+bool showMenu = false; //help us to know if we need to draw the in game menu/end screen or not
+bool gameGridGenerated = false; //generate the game grid for the first running of the game screen after a lvl was selected
+bool gridGeneratedEffectShow; //help us to know if the screen was animated after the game grid was generated
+bool ballsStreak; //after we drop the balls we need to know if it was a streak of at least 3 balls
+bool gameLost; //help us to know when the game was lost
+bool spriteToRight = true; //variable that is important for the character facing (to right or left)
+bool gameEvent; //to know if it is a game notification and draw it
+bool lvlTargetHit; //helps us to know if we had previously reached the level target
+
+//ararys of sprites that contains the character images - helps us to animate them
+sf::Sprite characterBoy[15], characterGirl[16], characterJack[10], characterNinja[10], menuWalkBoy[15], menuWalkGirl[20], menuRunJack[8], menuSlideJack[10], menuIdleKnight[10],
+	menuGlideNinja[10];
+sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png")); //the ball sprite
+
+//clock variables that makes the game more realistic
+sf::Clock clockRefreshRate, clockGameMenu, inGameEvents;
+
+//declaring the method with its definition only for accesing each other from within
+//methods used for creating the chain reaction
 void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
+
+//declaring the method with its definition only; this way it could be called by other methods that are above the method
 void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak);
 
-void generateGameGrid(int level, int gameGrid[40][40], int linesNo, int columnsNo)
+//method that generates the gamegrid - the game grid is the one tht stores the values for the balls
+void generateGameGrid(int gameGrid[40][40], int linesNo, int columnsNo)
 {
 
-	if (level == 1) {
-		srand(time(NULL));
-		for(int i=0; i<linesNo; i++) {
-			for(int j=0; j<columnsNo; j++) {
-				if (i<linesNo - 8) {
-					int randNo;
-					do {
-						randNo = rand() % (5 + gameLvl);
-					} while (randNo == 0);
-					gameGrid[i][j] = randNo;
-				} else if (i<linesNo - 7) {
-					int chance = rand() % 4;
-					if (chance == 0) {
-						gameGrid[i][j] = 0;
-					} else {
-						gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
-					}
-				} else if (i<linesNo - 6) {
-					int chance = rand() % 3;
-					if (gameGrid[i-1][j] == 0 || chance == 0) {
-						gameGrid[i][j] = 0;
-					} else {
-						gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
-					}
-				} else {
+	srand(time(NULL)); //making sure that every time are generated random numbers
+	for(int i=0; i<linesNo; i++) {
+		for(int j=0; j<columnsNo; j++) {
+			if (i<linesNo - 8) {
+				int randNo;
+				do {
+					randNo = rand() % (5 + gameLvl);
+				} while (randNo == 0);
+				gameGrid[i][j] = randNo;
+			} else if (i<linesNo - 7) {
+				int chance = rand() % 4;
+				if (chance == 0) {
 					gameGrid[i][j] = 0;
+				} else {
+					gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
 				}
+			} else if (i<linesNo - 6) {
+				int chance = rand() % 3;
+				if (gameGrid[i-1][j] == 0 || chance == 0) {
+					gameGrid[i][j] = 0;
+				} else {
+					gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
+				}
+			} else {
+				gameGrid[i][j] = 0;
 			}
 		}
 	}
@@ -103,7 +118,7 @@ void addRow(int level, int gameGrid[40][40], int linesNo, int columnsNo)
 				gameGrid[i][j] = gameGrid[i - 1][j];
 			}
 		}
-		srand(time(NULL));
+		srand(time(NULL)); //making sure that every time are generated random numbers
 		for(int i=0; i<columnsNo; i++) {
 			int randNo;
 			do {
@@ -228,7 +243,7 @@ void drawCharacter(int type, int characterX, int characterY)
 	sf::Sprite ballSprite(zfSFML.loadSpriteFromTexture("Assets/", "ball", "png"));
 	ballSprite.setScale(0.25, 0.25);
 	ballSprite.setColor(gameBallColors[ballsInHandType - 1]);
-	srand(time(NULL));
+	srand(time(NULL)); //making sure that every time are generated random numbers
 	if(ballsInHandNo > 3) ballsInHandNo = 3;
 	for(int i=ballsInHandNo - 1; i>=0; i--) {
 		int movement;
@@ -1496,7 +1511,7 @@ int main()
 				gameGridGenerated = true;
 				levelColumns = 5 + gameLvl * 2;
 				levelLines = 12;
-				generateGameGrid(1, gameGrid, levelLines, levelColumns);
+				generateGameGrid(gameGrid, levelLines, levelColumns);
 				generateGameBallColors(gameBallColors, 10);
 				gameLost = false;
 				lvlScore = 0;
