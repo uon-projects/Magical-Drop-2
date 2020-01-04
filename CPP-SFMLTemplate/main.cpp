@@ -1343,12 +1343,12 @@ void drawOptionsScreen()
 
 int main()
 {
-	//setting the window frame limit - 30
+	//setting the window frame limit to 30 (usually it is 60)
 	window.setFramerateLimit(30);
 
 	//setting the game window icon
 	sf::Image icon;
-	icon.loadFromFile("Assets/zeoflow_logo.png");
+	icon.loadFromFile("Assets/magical_drop_2_icon.png");
 	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
 	//initialise the array that contains each level target
