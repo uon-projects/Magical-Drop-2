@@ -23,7 +23,7 @@ const int SCENE_SELECT_LVL = 4;
 const int SCENE_HOW_TO_SCREEN = 5;
 const int objectSize = 35; //the ball size
 int currentScreen = SCENE_SPLASH_SCREEN; //the current screen
-int lvlUnlocked = 1; //variable that store the number of unlocked levels
+int lvlUnlocked = 10; //variable that store the number of unlocked levels
 int gameLvl; //variable that store the current level
 int inGameEventType = 1; //variable storing the type of notification that appear in game
 int userCharacter = 1; //here we store the character that the user choose (by default is the first character - the boy)
@@ -66,16 +66,16 @@ sf::Clock clockRefreshRate, clockGameMenu, inGameEvents, inGameClock;
 
 //declaring the method with its definition only for accesing each other from within
 //methods used for creating the chain reaction
-void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
-void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
-void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
-void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
+void checkBallTop(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
+void checkBallBottom(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
+void checkBallLeft(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
+void checkBallRight(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType);
 
 //declaring the method with its definition only; this way it could be called by other methods that are above the method
-void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak);
+void markBalls(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak);
 
 //method that generates the gamegrid - the game grid is the one tht stores the values for the balls
-void generateGameGrid(int gameGrid[40][40], int linesNo, int columnsNo)
+void generateGameGrid(int gameGrid[12][17], int linesNo, int columnsNo)
 {
 
 	srand(time(NULL)); //making sure that every time are generated random numbers
@@ -111,7 +111,7 @@ void generateGameGrid(int gameGrid[40][40], int linesNo, int columnsNo)
 }
 
 //method that add a row of random balls at every X seconds
-void addRow(int gameGrid[40][40], int linesNo, int columnsNo)
+void addRow(int gameGrid[12][17], int linesNo, int columnsNo)
 {
 
 	//moving the rows with one row below
@@ -264,7 +264,7 @@ void drawCharacter(int type, int characterX, int characterY)
 }
 
 //method that draws the pointers that help us to know: where will the ball fall/which ball to take
-void drawPointers(int characterX, int characterY, int gameGrid[40][40])
+void drawPointers(int characterX, int characterY, int gameGrid[12][17])
 {	
 	sf::CircleShape circle;
 	circle.setRadius(7);
@@ -295,7 +295,7 @@ void drawPointers(int characterX, int characterY, int gameGrid[40][40])
 }
 
 //get the first row where it is a ball and it's on the same column as the character
-int getBallX(int gameGrid[40][40], int characterY, int gameLines)
+int getBallX(int gameGrid[12][17], int characterY, int gameLines)
 {
 	int i = gameLines;
 	bool found = false;
@@ -309,7 +309,7 @@ int getBallX(int gameGrid[40][40], int characterY, int gameLines)
 }
 
 //get the number of balls that are the same and are on the same column
-int getSameBalls(int gameGrid[40][40], int ballY, int ballX)
+int getSameBalls(int gameGrid[12][17], int ballY, int ballX)
 {
 	int i = ballX;
 	int ballsNo = 1;
@@ -327,7 +327,7 @@ int getSameBalls(int gameGrid[40][40], int ballY, int ballX)
 }
 
 //droping the balls from the character hands to the game board
-void throwBalls(int gameGrid[40][40], int characterY, int gameLines)
+void throwBalls(int gameGrid[12][17], int characterY, int gameLines)
 {
 	int i = gameLines - 1;
 	bool found = false;
@@ -357,7 +357,7 @@ void throwBalls(int gameGrid[40][40], int characterY, int gameLines)
 }
 
 //getting the balls from the game board
-void getBalls(int gameGrid[40][40], int characterY, int gameLines)
+void getBalls(int gameGrid[12][17], int characterY, int gameLines)
 {
 	int i = gameLines - 1;
 	bool exit = false;
@@ -381,7 +381,7 @@ void getBalls(int gameGrid[40][40], int characterY, int gameLines)
 }
 
 //checking if the game i lost - at least a ball is on the last row
-bool checkGameLost(int gameGrid[40][40], int linesNo, int columnsNo)
+bool checkGameLost(int gameGrid[12][17], int linesNo, int columnsNo)
 {
 	bool lost = false;
 	int i = 0;
@@ -396,7 +396,7 @@ bool checkGameLost(int gameGrid[40][40], int linesNo, int columnsNo)
 }
 
 //get the number of balls that are the same
-int isAStreak(int column, int line, int gameGrid[40][40])
+int isAStreak(int column, int line, int gameGrid[12][17])
 {
 	int ballsNo = 1;
 	int ballType = gameGrid[line][column];
@@ -415,7 +415,7 @@ int isAStreak(int column, int line, int gameGrid[40][40])
 }
 
 //deleting the empty space that are within the balls
-void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
+void checkEmptySpaces(int gameGrid[12][17], int linesNo, int columnsNo)
 {
 	for(int i = 0; i<columnsNo; i++) {
 		for(int j = linesNo - 1; j>=1; j--) {
@@ -435,7 +435,7 @@ void checkEmptySpaces(int gameGrid[40][40], int linesNo, int columnsNo)
 }
 
 //check same ball type at the top of the current ball
-void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
+void checkBallTop(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballX > 0) {
 		ballX -= 1;
@@ -450,7 +450,7 @@ void checkBallTop(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, i
 }
 
 //check same ball type at the bottom of the current ball
-void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
+void checkBallBottom(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballX < linesNo - 1) {
 		ballX += 1;
@@ -465,7 +465,7 @@ void checkBallBottom(int gameGrid[40][40], int linesNo, int columnsNo, int ballY
 }
 
 //check same ball type at the left of the current ball
-void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
+void checkBallLeft(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballY > 0) {
 		ballY -= 1;
@@ -480,7 +480,7 @@ void checkBallLeft(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, 
 }
 
 //check same ball type at the right of the current ball
-void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
+void checkBallRight(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
 	if(ballY < columnsNo - 1) {
 		ballY += 1;
@@ -495,7 +495,7 @@ void checkBallRight(int gameGrid[40][40], int linesNo, int columnsNo, int ballY,
 }
 
 //remove the balls that needs to be destroyed due to the chain reaction
-void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballType)
+void removeAllBalls(int gameGrid[12][17], int linesNo, int columnsNo, int ballType)
 {
 	int score = 0;
 	for(int i = 0; i<linesNo; i++) {
@@ -510,7 +510,7 @@ void removeAllBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballTy
 }
 
 //detect the balls that are the same and cause chain reaction
-void markBalls(int gameGrid[40][40], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak)
+void markBalls(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak)
 {
 	int ballType = gameGrid[ballX][ballY];
 	if(getSameBalls(gameGrid, ballY, ballX) >= 3 || ballsStreak >= 3) {
@@ -1459,7 +1459,7 @@ int main()
 		menuGlideNinja[i] = characterIdle;
 	}
 
-	int gameGrid[40][40]; //the array that store the game board
+	int gameGrid[12][17]; //the array that store the game board
 	int clockState = 0; //helps us to reset the in-game clock at the first launch
 	int characterX, characterY; //the x and y coordinates for the character
 
