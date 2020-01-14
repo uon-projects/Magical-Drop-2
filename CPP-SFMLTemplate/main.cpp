@@ -79,29 +79,45 @@ void generateGameGrid(int gameGrid[12][17], int linesNo, int columnsNo)
 {
 
 	srand(time(NULL)); //making sure that every time are generated random numbers
-	for(int i=0; i<linesNo; i++) {
-		for(int j=0; j<columnsNo; j++) {
-			if (i<linesNo - 8) {
+	for(int i=0; i<linesNo; i++)
+	{
+		for(int j=0; j<columnsNo; j++)
+		{
+			if (i<linesNo - 8)
+			{
 				int randNo;
-				do {
+				do
+				{
 					randNo = rand() % (5 + gameLvl);
 				} while (randNo == 0);
 				gameGrid[i][j] = randNo;
-			} else if (i<linesNo - 7) {
+			}
+			else if (i<linesNo - 7)
+			{
 				int chance = rand() % 4;
-				if (chance == 0) {
+				if (chance == 0)
+				{
 					gameGrid[i][j] = 0;
-				} else {
+				}
+				else
+				{
 					gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
 				}
-			} else if (i<linesNo - 6) {
+			}
+			else if (i<linesNo - 6)
+			{
 				int chance = rand() % 3;
-				if (gameGrid[i-1][j] == 0 || chance == 0) {
+				if (gameGrid[i-1][j] == 0 || chance == 0)
+				{
 					gameGrid[i][j] = 0;
-				} else {
+				}
+				else
+				{
 					gameGrid[i][j] = rand() % (4 + gameLvl) + 1;
 				}
-			} else {
+			}
+			else
+			{
 				//adding the empty spaces
 				gameGrid[i][j] = 0;
 			}
@@ -115,16 +131,20 @@ void addRow(int gameGrid[12][17], int linesNo, int columnsNo)
 {
 
 	//moving the rows with one row below
-	for(int i=linesNo - 1; i>0; i--) {
-		for(int j=0; j<columnsNo; j++) {
+	for(int i=linesNo - 1; i>0; i--)
+	{
+		for(int j=0; j<columnsNo; j++)
+		{
 			gameGrid[i][j] = gameGrid[i - 1][j];
 		}
 	}
 	srand(time(NULL)); //making sure that every time are generated random numbers
 	//adding a new row
-	for(int i=0; i<columnsNo; i++) {
+	for(int i=0; i<columnsNo; i++)
+	{
 		int randNo;
-		do {
+		do
+		{
 			randNo = rand() % (5 + gameLvl);
 		} while (randNo == 0);
 		gameGrid[0][i] = randNo;
@@ -163,82 +183,111 @@ void generateGameBallColors(sf::Color ballColors[11], int colors)
 void drawCharacter(int type, int characterX, int characterY)
 {
 	//drawing the different types of characters
-	if(userCharacter == 1) {
+	if(userCharacter == 1)
+	{
 		characterBoy[characterAnimation].setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2), 40*characterX);
-		if(spriteToRight) {
+		if(spriteToRight)
+		{
 			characterBoy[characterAnimation].setOrigin(30, 430);
 			characterBoy[characterAnimation].setScale(0.2, 0.2);
-		} else {
+		}
+		else
+		{
 			characterBoy[characterAnimation].setOrigin(235, 430);
 			characterBoy[characterAnimation].setScale(-0.2, 0.2);
 		}
 		window.draw(characterBoy[characterAnimation]);
 
-		if(clockRefreshRate.getElapsedTime().asMilliseconds() > 50) {
+		if(clockRefreshRate.getElapsedTime().asMilliseconds() > 50)
+		{
 			characterAnimation++;
 			clockRefreshRate.restart();
 		}
 		if(characterAnimation == 7) characterAnimation = 0;
-	} else if(userCharacter == 2) {
+	}
+	else if(userCharacter == 2)
+	{
 		characterGirl[characterAnimation].setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2), 40*characterX);
-		if(spriteToRight) {
+		if(spriteToRight)
+		{
 			characterGirl[characterAnimation].setOrigin(147, 400);
 			characterGirl[characterAnimation].setScale(0.23, 0.23);
-		} else {
+		}
+		else
+		{
 			characterGirl[characterAnimation].setOrigin(325, 400);
 			characterGirl[characterAnimation].setScale(-0.23, 0.23);
 		}
 		window.draw(characterGirl[characterAnimation]);
 
-		if(clockRefreshRate.getElapsedTime().asMilliseconds() > 50) {
+		if(clockRefreshRate.getElapsedTime().asMilliseconds() > 50)
+		{
 			characterAnimation++;
 			clockRefreshRate.restart();
 		}
 		if(characterAnimation == 16) characterAnimation = 0;
-	} else if(userCharacter == 3) {
+	}
+	else if(userCharacter == 3)
+	{
 		menuIdleKnight[characterAnimation].setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2), 40*characterX);
-		if(spriteToRight) {
+		if(spriteToRight)
+		{
 			menuIdleKnight[characterAnimation].setOrigin(105, 570);
 			menuIdleKnight[characterAnimation].setScale(0.15, 0.15);
-		} else {
+		}
+		else
+		{
 			menuIdleKnight[characterAnimation].setOrigin(375, 570);
 			menuIdleKnight[characterAnimation].setScale(-0.15, 0.15);
 		}
 		window.draw(menuIdleKnight[characterAnimation]);
 
-		if(clockRefreshRate.getElapsedTime().asMilliseconds() > 50) {
+		if(clockRefreshRate.getElapsedTime().asMilliseconds() > 50)
+		{
 			characterAnimation++;
 			clockRefreshRate.restart();
 		}
 		if(characterAnimation == 10) characterAnimation = 0;
-	} else if(userCharacter == 4) {
+	}
+	else if(userCharacter == 4)
+	{
 		characterJack[characterAnimation].setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2), 40*characterX);
-		if(spriteToRight) {
+		if(spriteToRight)
+		{
 			characterJack[characterAnimation].setOrigin(70, 650);
 			characterJack[characterAnimation].setScale(0.14, 0.14);
-		} else {
+		}
+		else
+		{
 			characterJack[characterAnimation].setOrigin(360, 650);
 			characterJack[characterAnimation].setScale(-0.14, 0.14);
 		}
 		window.draw(characterJack[characterAnimation]);
 
-		if(clockRefreshRate.getElapsedTime().asMilliseconds() > 50) {
+		if(clockRefreshRate.getElapsedTime().asMilliseconds() > 50)
+		{
 			characterAnimation++;
 			clockRefreshRate.restart();
 		}
 		if(characterAnimation == 10) characterAnimation = 0;
-	} else if(userCharacter == 5) {
+	}
+	else if(userCharacter == 5)
+	{
 		characterNinja[characterAnimation].setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2), 40*characterX);
-		if(spriteToRight) {
+		if(spriteToRight)
+		{
 			characterNinja[characterAnimation].setOrigin(30, 380);
 			characterNinja[characterAnimation].setScale(0.22, 0.22);
-		} else {
+		}
+		else
+		{
 			characterNinja[characterAnimation].setOrigin(221, 380);
 			characterNinja[characterAnimation].setScale(-0.22, 0.22);
 		}
 		window.draw(characterNinja[characterAnimation]);
 
-		if(clockRefreshRate.getElapsedTime().asMilliseconds() > 50) {
+		if(clockRefreshRate.getElapsedTime().asMilliseconds() > 50)
+		{
 			characterAnimation++;
 			clockRefreshRate.restart();
 		}
@@ -251,11 +300,15 @@ void drawCharacter(int type, int characterX, int characterY)
 	ballSpriteInHand.setColor(gameBallColors[ballsInHandType - 1]);
 	srand(time(NULL)); //making sure that every time are generated random numbers
 	if(ballsInHandNo > 3) ballsInHandNo = 3;
-	for(int i=ballsInHandNo - 1; i>=0; i--) {
+	for(int i=ballsInHandNo - 1; i>=0; i--)
+	{
 		int movement;
-		if(i!=0) {
+		if(i!=0)
+		{
 			movement = 8 - i*2 + rand()%(i*4);
-		} else {
+		}
+		else
+		{
 			movement = 8;
 		}
 		ballSpriteInHand.setPosition(objectSize*characterY + (window.getSize().x/2 - objectSize*levelColumns/2) + movement, 40*characterX - 25 * (i + 1) + 2 * i);
@@ -271,23 +324,30 @@ void drawPointers(int characterX, int characterY, int gameGrid[12][17])
 	sf::RectangleShape menuSqr;
 	menuSqr.setSize(sf::Vector2f(100, 100));
 	menuSqr.setScale(0.14, 0.35);
-	if(ballsInHandNo>0) {
+	if(ballsInHandNo>0)
+	{
 		//in case that we have balls in hand we color the pointers with the balls color
 		menuSqr.setFillColor(gameBallColors[ballsInHandType - 1]);
 		circle.setFillColor(gameBallColors[ballsInHandType - 1]);
-	} else {
+	}
+	else
+	{
 		//otherwise we color them with a dark color
 		menuSqr.setFillColor(sf::Color(43, 43, 43));
 		circle.setFillColor(sf::Color(43, 43, 43));
 	}
-	for(int i = levelLines - 2; i>=0; i--) {
-		if (gameGrid[i -1][characterY] != 0 && gameGrid[i][characterY] == 0 || i == 0 && gameGrid[i][characterY] == 0) {
+	for(int i = levelLines - 2; i>=0; i--)
+	{
+		if (gameGrid[i -1][characterY] != 0 && gameGrid[i][characterY] == 0 || i == 0 && gameGrid[i][characterY] == 0)
+		{
 			menuSqr.setScale(0.14, 0.30);
 			menuSqr.setPosition(objectSize*characterY + 13 + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 22);
 			circle.setPosition(objectSize*characterY + 13 + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 17);
 			window.draw(menuSqr);
 			window.draw(circle);
-		} else if (gameGrid[i][characterY] == 0) {
+		}
+		else if (gameGrid[i][characterY] == 0)
+		{
 			menuSqr.setPosition(objectSize*characterY + 13 + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 15);
 			window.draw(menuSqr);
 		}
@@ -299,8 +359,10 @@ int getBallX(int gameGrid[12][17], int characterY, int gameLines)
 {
 	int i = gameLines;
 	bool found = false;
-	while(i>=1 && !found) {
-		if(gameGrid[i - 1][characterY] != 0) {
+	while(i>=1 && !found)
+	{
+		if(gameGrid[i - 1][characterY] != 0)
+		{
 			found = true;
 		}
 		i--;
@@ -315,11 +377,15 @@ int getSameBalls(int gameGrid[12][17], int ballY, int ballX)
 	int ballsNo = 1;
 	int ballType = gameGrid[i][ballY];
 	bool stop = false;
-	while(i>=0 && !stop) {
-		if(gameGrid[i - 1][ballY] == ballType) {
+	while(i>=0 && !stop)
+	{
+		if(gameGrid[i - 1][ballY] == ballType)
+		{
 			ballsNo++;
 			i--;
-		} else {
+		}
+		else
+		{
 			stop = true;
 		}
 	}
@@ -331,25 +397,33 @@ void throwBalls(int gameGrid[12][17], int characterY, int gameLines)
 {
 	int i = gameLines - 1;
 	bool found = false;
-	while(i>=1 && !found) {
-		if(gameGrid[i - 1][characterY] != 0) {
+	while(i>=1 && !found)
+	{
+		if(gameGrid[i - 1][characterY] != 0)
+		{
 			found = true;
-		} else {
+		}
+		else
+		{
 			i--;
 		}
 	}
-	if (found || i == 0) {
+	if (found || i == 0)
+	{
 		int startLine = i;
-		while(startLine < gameLines && ballsInHandNo > 0 && ballsInHandType != 0) {
+		while(startLine < gameLines && ballsInHandNo > 0 && ballsInHandType != 0)
+		{
 			gameGrid[startLine][characterY] = ballsInHandType;
 			startLine++;
 			ballsInHandNo--;
-			if (ballsInHandNo == 0 || startLine == gameLines) {
+			if (ballsInHandNo == 0 || startLine == gameLines)
+			{
 				ballsInHandType = 0;
 				ballsInHandNo = 0;
 			}
 		}
-		if(ballsStreak) {
+		if(ballsStreak)
+		{
 			ballsInHandType = 0;
 			ballsInHandNo = 0;
 		}
@@ -361,17 +435,25 @@ void getBalls(int gameGrid[12][17], int characterY, int gameLines)
 {
 	int i = gameLines - 1;
 	bool exit = false;
-	while(i >= 0 && !exit) {
-		if(gameGrid[i][characterY] != 0) {
-			if (ballsInHandType == 0) {
+	while(i >= 0 && !exit)
+	{
+		if(gameGrid[i][characterY] != 0)
+		{
+			if (ballsInHandType == 0)
+			{
 				ballsInHandType = gameGrid[i][characterY];
 				gameGrid[i][characterY] = 0;
 				ballsInHandNo++;
-			} else {
-				if(gameGrid[i][characterY] == ballsInHandType) {
+			}
+			else
+			{
+				if(gameGrid[i][characterY] == ballsInHandType)
+				{
 					gameGrid[i][characterY] = 0;
 					ballsInHandNo++;
-				} else {
+				}
+				else 
+				{
 					exit = true;
 				}
 			}
@@ -385,8 +467,10 @@ bool checkGameLost(int gameGrid[12][17], int linesNo, int columnsNo)
 {
 	bool lost = false;
 	int i = 0;
-	while(!lost && i<columnsNo) {
-		if (gameGrid[linesNo - 1][i] != 0) {
+	while(!lost && i<columnsNo) 
+	{
+		if (gameGrid[linesNo - 1][i] != 0) 
+		{
 			lost = true;
 		}
 		i++;
@@ -401,12 +485,14 @@ int isAStreak(int column, int line, int gameGrid[12][17])
 	int ballsNo = 1;
 	int ballType = gameGrid[line][column];
 	int i = line - 1;
-	while(gameGrid[i][column] == ballType && i>=0) {
+	while(gameGrid[i][column] == ballType && i>=0) 
+	{
 		i--;
 		ballsNo++;
 	}
 	i = line + 1;
-	while(gameGrid[i][column] == ballType && i<levelLines) {
+	while(gameGrid[i][column] == ballType && i<levelLines) 
+	{
 		i++;
 		ballsNo++;
 	}
@@ -417,14 +503,19 @@ int isAStreak(int column, int line, int gameGrid[12][17])
 //deleting the empty space that are within the balls
 void checkEmptySpaces(int gameGrid[12][17], int linesNo, int columnsNo)
 {
-	for(int i = 0; i<columnsNo; i++) {
-		for(int j = linesNo - 1; j>=1; j--) {
-			if(gameGrid[j][i] != 0 && gameGrid[j - 1][i] == 0) {
+	for(int i = 0; i<columnsNo; i++) 
+	{
+		for(int j = linesNo - 1; j>=1; j--) 
+		{
+			if(gameGrid[j][i] != 0 && gameGrid[j - 1][i] == 0) 
+			{
 				gameGrid[j - 1][i] = gameGrid[j][i];
 				gameGrid[j][i] = 0;
-				if(gameGrid[j-1][i] != gameGrid[j+1][i]) {
+				if(gameGrid[j-1][i] != gameGrid[j+1][i]) 
+				{
 					int streak = isAStreak(i, j-1, gameGrid);
-					if(streak >= 3) {
+					if(streak >= 3) 
+					{
 						markBalls(gameGrid, linesNo, columnsNo, i, j-1, streak);
 					}
 				}
@@ -437,10 +528,12 @@ void checkEmptySpaces(int gameGrid[12][17], int linesNo, int columnsNo)
 //check same ball type at the top of the current ball
 void checkBallTop(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
-	if(ballX > 0) {
+	if(ballX > 0) 
+	{
 		ballX -= 1;
 		int cBallType = gameGrid[ballX][ballY];
-		if(cBallType == ballType) {
+		if(cBallType == ballType) 
+		{
 			gameGrid[ballX][ballY] = ballType * -1;
 			checkBallTop(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
 			checkBallLeft(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
@@ -452,10 +545,12 @@ void checkBallTop(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, i
 //check same ball type at the bottom of the current ball
 void checkBallBottom(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
-	if(ballX < linesNo - 1) {
+	if(ballX < linesNo - 1) 
+	{
 		ballX += 1;
 		int cBallType = gameGrid[ballX][ballY];
-		if(cBallType == ballType) {
+		if(cBallType == ballType) 
+		{
 			gameGrid[ballX][ballY] = ballType * -1;
 			checkBallBottom(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
 			checkBallLeft(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
@@ -467,10 +562,12 @@ void checkBallBottom(int gameGrid[12][17], int linesNo, int columnsNo, int ballY
 //check same ball type at the left of the current ball
 void checkBallLeft(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
-	if(ballY > 0) {
+	if(ballY > 0) 
+	{
 		ballY -= 1;
 		int cBallType = gameGrid[ballX][ballY];
-		if(cBallType == ballType) {
+		if(cBallType == ballType) 
+		{
 			gameGrid[ballX][ballY] = ballType * -1;
 			checkBallBottom(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
 			checkBallTop(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
@@ -482,10 +579,12 @@ void checkBallLeft(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, 
 //check same ball type at the right of the current ball
 void checkBallRight(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballType)
 {
-	if(ballY < columnsNo - 1) {
+	if(ballY < columnsNo - 1) 
+	{
 		ballY += 1;
 		int cBallType = gameGrid[ballX][ballY];
-		if(cBallType == ballType) {
+		if(cBallType == ballType) 
+		{
 			gameGrid[ballX][ballY] = ballType * -1;
 			checkBallBottom(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
 			checkBallTop(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
@@ -498,9 +597,12 @@ void checkBallRight(int gameGrid[12][17], int linesNo, int columnsNo, int ballY,
 void removeAllBalls(int gameGrid[12][17], int linesNo, int columnsNo, int ballType)
 {
 	int score = 0;
-	for(int i = 0; i<linesNo; i++) {
-		for(int j=0; j<columnsNo; j++) {
-			if(gameGrid[i][j] * -1 == ballType) {
+	for(int i = 0; i<linesNo; i++) 
+	{
+		for(int j=0; j<columnsNo; j++) 
+		{
+			if(gameGrid[i][j] * -1 == ballType) 
+			{
 				gameGrid[i][j] = 0;
 				score++;
 			}
@@ -513,7 +615,8 @@ void removeAllBalls(int gameGrid[12][17], int linesNo, int columnsNo, int ballTy
 void markBalls(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int ballX, int ballsStreak)
 {
 	int ballType = gameGrid[ballX][ballY];
-	if(getSameBalls(gameGrid, ballY, ballX) >= 3 || ballsStreak >= 3) {
+	if(getSameBalls(gameGrid, ballY, ballX) >= 3 || ballsStreak >= 3) 
+	{
 		gameGrid[ballX][ballY] = ballType * -1;
 		checkBallTop(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
 		checkBallBottom(gameGrid, linesNo, columnsNo, ballY, ballX, ballType);
@@ -526,7 +629,8 @@ void markBalls(int gameGrid[12][17], int linesNo, int columnsNo, int ballY, int 
 }
 
 //method that checks if a level is unlocked
-bool isLvlUnlocked(int lvl) {
+bool isLvlUnlocked(int lvl) 
+{
 	return lvl <= lvlUnlocked;
 }
 
@@ -575,7 +679,8 @@ void drawGameMenuBg()
 	menuRunJack[stateJack2].setPosition(780, 310);
 	window.draw(menuRunJack[stateJack2]);
 
-	if(clockRefreshRate.getElapsedTime().asMilliseconds() > 100) {
+	if(clockRefreshRate.getElapsedTime().asMilliseconds() > 100)
+	{
 		stateKnight1++;
 		stateKnight2++;
 		stateNinja1++;
@@ -628,7 +733,8 @@ void drawGameMenu()
 	sf::IntRect btnPlayRect(btnPlayL1.getPosition().x - btnPlayL1.getGlobalBounds().width / 2, btnPlayL1.getPosition().y - btnPlayL1.getGlobalBounds().height / 2,
 		btnPlayL1.getGlobalBounds().width, btnPlayL1.getGlobalBounds().height);
 
-	if (btnPlayRect.contains(sf::Mouse::getPosition(window))) {
+	if (btnPlayRect.contains(sf::Mouse::getPosition(window))) 
+	{
 		btnPlayL2.setPosition(685, 55);
 		btnPlayL3.setPosition(695, 45);
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -636,7 +742,9 @@ void drawGameMenu()
 			currentScreen = SCENE_SELECT_LVL;
 			clockRefreshRate.restart();
 		}
-	} else {
+	} 
+	else 
+	{
 		btnPlayL2.setPosition(675, 60);
 		btnPlayL3.setPosition(705, 40);
 	}
@@ -671,7 +779,8 @@ void drawGameMenu()
 	sf::IntRect btnCharactersRect(btnCharactersL1.getPosition().x - btnCharactersL1.getGlobalBounds().width / 2, btnCharactersL1.getPosition().y - btnCharactersL1.getGlobalBounds().height / 2,
 		btnCharactersL1.getGlobalBounds().width, btnCharactersL1.getGlobalBounds().height);
 
-	if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) {
+	if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) 
+	{
 		btnCharactersL2.setPosition(685, 125);
 		btnCharactersL3.setPosition(695, 115);
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -679,7 +788,9 @@ void drawGameMenu()
 			currentScreen = SCENE_OPTIONS_SCREEN;
 			clockRefreshRate.restart();
 		}
-	} else {
+	} 
+	else 
+	{
 		btnCharactersL2.setPosition(675, 130);
 		btnCharactersL3.setPosition(705, 110);
 	}
@@ -712,7 +823,8 @@ void drawGameMenu()
 	sf::IntRect btnC2haractersRect(btnCharactersL1.getPosition().x - btnCharactersL1.getGlobalBounds().width / 2, btnCharactersL1.getPosition().y - btnCharactersL1.getGlobalBounds().height / 2,
 		btnCharactersL1.getGlobalBounds().width, btnCharactersL1.getGlobalBounds().height);
 
-	if (btnC2haractersRect.contains(sf::Mouse::getPosition(window))) {
+	if (btnC2haractersRect.contains(sf::Mouse::getPosition(window))) 
+	{
 		btnCharactersL2.setPosition(685, 195);
 		btnCharactersL3.setPosition(695, 185);
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -720,7 +832,9 @@ void drawGameMenu()
 			currentScreen = SCENE_HOW_TO_SCREEN;
 			clockRefreshRate.restart();
 		}
-	} else {
+	} 
+	else 
+	{
 		btnCharactersL2.setPosition(675, 200);
 		btnCharactersL3.setPosition(705, 180);
 	}
@@ -739,8 +853,10 @@ void drawInGameMenu()
 	auto mouse_pos = sf::Mouse::getPosition(window);
 	auto translated_pos = window.mapPixelToCoords(mouse_pos);
 
-	if(clockGameMenu.getElapsedTime().asMicroseconds() > 10) {
-		if(menuSquares<levelColumns*levelLines / 2) {
+	if(clockGameMenu.getElapsedTime().asMicroseconds() > 10) 
+	{
+		if(menuSquares<levelColumns*levelLines / 2) 
+		{
 			menuSquares++;
 		}
 		clockGameMenu.restart();
@@ -749,15 +865,21 @@ void drawInGameMenu()
 	menuSqr.setSize(sf::Vector2f(40, 40));
 	menuSqr.setFillColor(sf::Color(43, 43, 43));
 	
-	for(int i=0; i<levelLines; i++) {
-		for(int j=0; j<levelColumns; j++) {
+	for(int i=0; i<levelLines; i++)
+	{
+		for(int j=0; j<levelColumns; j++) 
+		{
 			int noSquares;
-			if(i>0) {
+			if(i>0) 
+			{
 				noSquares = i*levelColumns + j;
-			} else {
+			} 
+			else 
+			{
 				noSquares = j;
 			}
-			if(noSquares < menuSquares) {
+			if(noSquares < menuSquares) 
+			{
 				int x = objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2);
 				int y = objectSize*i + 10;
 				menuSqr.setPosition(x, y);
@@ -766,7 +888,8 @@ void drawInGameMenu()
 				y = objectSize*(levelLines - i - 1) + 10;
 				menuSqr.setPosition(x, y);
 				window.draw(menuSqr);
-				if(j<levelLines) {
+				if(j<levelLines)
+				{
 					x = objectSize*i + (window.getSize().x/2 - objectSize*levelColumns/2);
 					y = objectSize*j + 10;
 					menuSqr.setPosition(x, y);
@@ -780,7 +903,8 @@ void drawInGameMenu()
 		}
 	}
 
-	if(levelColumns*levelLines / 2 == menuSquares && optionSelected == 0) {
+	if(levelColumns*levelLines / 2 == menuSquares && optionSelected == 0) 
+	{
 		scoreText.setString("SCORE:");
 		scoreText.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 40);
 		scoreText.setCharacterSize(30);
@@ -798,12 +922,16 @@ void drawInGameMenu()
 		inGameResume.setString("RESUME");
 		inGameResume.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 150);
 		inGameResume.setCharacterSize(26);
-		if(inGameResume.getGlobalBounds().contains(translated_pos)) {
+		if(inGameResume.getGlobalBounds().contains(translated_pos)) 
+		{
 			inGameResume.setFillColor(sf::Color(255, 255, 255));
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+			{
 				showMenu = false;
 			}
-		} else {
+		}
+		else
+		{
 			inGameResume.setFillColor(sf::Color(198, 198, 198));
 		}
 		inGameResume.setOrigin(inGameResume.getGlobalBounds().width/2, 0);
@@ -812,12 +940,15 @@ void drawInGameMenu()
 		inGameOptions.setString("OPTIONS");
 		inGameOptions.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 180);
 		inGameOptions.setCharacterSize(26);
-		if(inGameOptions.getGlobalBounds().contains(translated_pos)) {
+		if(inGameOptions.getGlobalBounds().contains(translated_pos)) 
+		{
 			inGameOptions.setFillColor(sf::Color(255, 255, 255));
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+			{
 
 			}
-		} else {
+		} else 
+		{
 			inGameOptions.setFillColor(sf::Color(198, 198, 198));
 		}
 		inGameOptions.setOrigin(inGameOptions.getGlobalBounds().width/2, 0);
@@ -826,17 +957,23 @@ void drawInGameMenu()
 		inGameExit.setString("EXIT");
 		inGameExit.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 210);
 		inGameExit.setCharacterSize(26);
-		if(inGameExit.getGlobalBounds().contains(translated_pos)) {
+		if(inGameExit.getGlobalBounds().contains(translated_pos)) 
+		{
 			inGameExit.setFillColor(sf::Color(255, 255, 255));
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+			{
 				optionSelected = 3;
 			}
-		} else {
+		} 
+		else 
+		{
 			inGameExit.setFillColor(sf::Color(198, 198, 198));
 		}
 		inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
 		window.draw(inGameExit);
-	} else if (optionSelected == 3) {
+	} 
+	else if (optionSelected == 3) 
+	{
 		//exit case
 		exitTitle.setString("EXIT");
 		exitTitle.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 70);
@@ -855,12 +992,16 @@ void drawInGameMenu()
 		exitNegative.setString("NO");
 		exitNegative.setPosition(objectSize*(levelColumns/2 - 1) + (window.getSize().x/2 - objectSize*levelColumns/2), 160);
 		exitNegative.setCharacterSize(18);
-		if(exitNegative.getGlobalBounds().contains(translated_pos)) {
+		if(exitNegative.getGlobalBounds().contains(translated_pos)) 
+		{
 			exitNegative.setFillColor(sf::Color(238, 28, 28));
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+			{
 				optionSelected = 0;
 			}
-		} else {
+		} 
+		else 
+		{
 			exitNegative.setFillColor(sf::Color(198, 198, 198));
 		}
 		exitNegative.setOrigin(exitNegative.getGlobalBounds().width/2, 0);
@@ -869,16 +1010,20 @@ void drawInGameMenu()
 		exitAfirmative.setString("YES");
 		exitAfirmative.setPosition(objectSize*(levelColumns/2 + 2) + (window.getSize().x/2 - objectSize*levelColumns/2), 160);
 		exitAfirmative.setCharacterSize(18);
-		if(exitAfirmative.getGlobalBounds().contains(translated_pos)) {
+		if(exitAfirmative.getGlobalBounds().contains(translated_pos))
+		{
 			exitAfirmative.setFillColor(sf::Color(28, 238, 77));
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+			{
 				currentScreen = SCENE_GAME_MENU_SCREEN;
 				clockRefreshRate.restart();
 				gameGridGenerated = false;
 				showMenu = false;
 				menuSquares = 0;
 			}
-		} else {
+		} 
+		else
+		{
 			exitAfirmative.setFillColor(sf::Color(198, 198, 198));
 		}
 		exitAfirmative.setOrigin(exitAfirmative.getGlobalBounds().width/2, 0);
@@ -889,9 +1034,12 @@ void drawInGameMenu()
 //method that hides the in-game menu (the game menu/end screen)
 void hideInGameMenu()
 {
-	if(clockGameMenu.getElapsedTime().asMicroseconds() > 250) {
-		if(menuSquares>0) {
-			if(menuSquares == 1) {
+	if(clockGameMenu.getElapsedTime().asMicroseconds() > 250)
+	{
+		if(menuSquares>0)
+		{
+			if(menuSquares == 1) 
+			{
 				inGameClock.restart();
 				optionSelected = 0;
 			}
@@ -903,16 +1051,23 @@ void hideInGameMenu()
 	menuSqr.setSize(sf::Vector2f(40, 40));
 	menuSqr.setFillColor(sf::Color(43, 43, 43));
 
-	if(gridGeneratedEffectShow) {
-		for(int i=0; i<levelLines; i++) {
-			for(int j=0; j<levelColumns; j++) {
+	if(gridGeneratedEffectShow) 
+	{
+		for(int i=0; i<levelLines; i++) 
+		{
+			for(int j=0; j<levelColumns; j++) 
+			{
 				int noSquares;
-				if(i>0) {
+				if(i>0) 
+				{
 					noSquares = i*levelColumns + j;
-				} else {
+				} 
+				else
+				{
 					noSquares = j;
 				}
-				if(noSquares < menuSquares) {
+				if(noSquares < menuSquares)
+				{
 					int x = objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2);
 					int y = objectSize*i + 10;
 					menuSqr.setPosition(x, y);
@@ -920,19 +1075,28 @@ void hideInGameMenu()
 				}
 			}
 		}
-		if(menuSquares == 0) {
+		if(menuSquares == 0)
+		{
 			gridGeneratedEffectShow = false;
 		}
-	} else {
-		for(int i=0; i<levelLines; i++) {
-			for(int j=0; j<levelColumns; j++) {
+	} 
+	else 
+	{
+		for(int i=0; i<levelLines; i++) 
+		{
+			for(int j=0; j<levelColumns; j++) 
+			{
 				int noSquares;
-				if(i>0) {
+				if(i>0) 
+				{
 					noSquares = i*levelColumns + j;
-				} else {
+				}
+				else 
+				{
 					noSquares = j;
 				}
-				if(noSquares < menuSquares) {
+				if(noSquares < menuSquares) 
+				{
 					int x = objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2);
 					int y = objectSize*i + 10;
 					menuSqr.setPosition(x, y);
@@ -941,7 +1105,8 @@ void hideInGameMenu()
 					y = objectSize*(levelLines - i - 1) + 10;
 					menuSqr.setPosition(x, y);
 					window.draw(menuSqr);
-					if(j<levelLines) {
+					if(j<levelLines)
+					{
 						x = objectSize*i + (window.getSize().x/2 - objectSize*levelColumns/2);
 						y = objectSize*j + 10;
 						menuSqr.setPosition(x, y);
@@ -963,29 +1128,38 @@ void drawGameLost()
 	auto mouse_pos = sf::Mouse::getPosition(window);
 	auto translated_pos = window.mapPixelToCoords(mouse_pos);
 
-	if(clockGameMenu.getElapsedTime().asSeconds() > 0.5) {
-		if(gameLostLines<=levelLines/2) {
+	if(clockGameMenu.getElapsedTime().asSeconds() > 0.5) 
+	{
+		if(gameLostLines<=levelLines/2)
+		{
 			gameLostLines++;
 		}
 		clockGameMenu.restart();
 	}
 	sf::RectangleShape menuSqr;
 	menuSqr.setSize(sf::Vector2f(40, 40));
-	if(lvlTargetHit && lvlScore > finishLvlScore[gameLvl - 1]) {
+	if(lvlTargetHit && lvlScore > finishLvlScore[gameLvl - 1]) 
+	{
 		menuSqr.setFillColor(gameWonColors[gameLostLines]);
-	} else {
+	} 
+	else 
+	{
 		menuSqr.setFillColor(gameLostColors[gameLostLines]);
 	}
-	for(int i = 0; i<levelLines; i++) {
-		for(int j = 0; j<levelColumns; j++) {
-			if(i < gameLostLines || i >= levelLines - gameLostLines) {
+	for(int i = 0; i<levelLines; i++) 
+	{
+		for(int j = 0; j<levelColumns; j++) 
+		{
+			if(i < gameLostLines || i >= levelLines - gameLostLines) 
+			{
 				menuSqr.setPosition(objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 10);
 				window.draw(menuSqr);
 			}
 		}
 	}
 
-	if(gameLostLines == levelLines/2 + 1 && optionSelected == 0) {
+	if(gameLostLines == levelLines/2 + 1 && optionSelected == 0) 
+	{
 		scoreText.setString("FINAL SCORE:");
 		scoreText.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 140);
 		scoreText.setCharacterSize(30);
@@ -1003,16 +1177,20 @@ void drawGameLost()
 		inGameExit.setString("RETURN HOME");
 		inGameExit.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 240);
 		inGameExit.setCharacterSize(26);
-		if(inGameExit.getGlobalBounds().contains(translated_pos)) {
+		if(inGameExit.getGlobalBounds().contains(translated_pos)) 
+		{
 			inGameExit.setFillColor(sf::Color(255, 255, 255));
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
 				currentScreen = SCENE_GAME_MENU_SCREEN;
 				clockRefreshRate.restart();
 				gameGridGenerated = false;
 				showMenu = false;
 				menuSquares = 0;
 			}
-		} else {
+		} 
+		else 
+		{
 			inGameExit.setFillColor(sf::Color(198, 198, 198));
 		}
 		inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
@@ -1021,28 +1199,34 @@ void drawGameLost()
 		inGameExit.setString("RETRY");
 		inGameExit.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 270);
 		inGameExit.setCharacterSize(26);
-		if(inGameExit.getGlobalBounds().contains(translated_pos)) {
+		if(inGameExit.getGlobalBounds().contains(translated_pos)) 
+		{
 			inGameExit.setFillColor(sf::Color(255, 255, 255));
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+			{
 				clockRefreshRate.restart();
 				gameGridGenerated = false;
 				showMenu = false;
 				menuSquares = 0;
 				currentScreen = SCENE_GAME_SCREEN;
 			}
-		} else {
+		} else 
+		{
 			inGameExit.setFillColor(sf::Color(198, 198, 198));
 		}
 		inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
 		window.draw(inGameExit);
 
-		if(gameLvl<lvlUnlocked && gameLvl <=6) {
+		if(gameLvl<lvlUnlocked && gameLvl <=6) 
+		{
 			inGameExit.setString("NEXT LEVEL");
 			inGameExit.setPosition(objectSize*levelColumns/2 + (window.getSize().x/2 - objectSize*levelColumns/2), 300);
 			inGameExit.setCharacterSize(26);
-			if(inGameExit.getGlobalBounds().contains(translated_pos)) {
+			if(inGameExit.getGlobalBounds().contains(translated_pos)) 
+			{
 				inGameExit.setFillColor(sf::Color(255, 255, 255));
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+				{
 					clockRefreshRate.restart();
 					gameGridGenerated = false;
 					showMenu = false;
@@ -1050,7 +1234,9 @@ void drawGameLost()
 					gameLvl++;
 					currentScreen = SCENE_GAME_SCREEN;
 				}
-			} else {
+			} 
+			else 
+			{
 				inGameExit.setFillColor(sf::Color(198, 198, 198));
 			}
 			inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
@@ -1073,12 +1259,16 @@ void drawSelectLvl()
 	inGameExit.setCharacterSize(26);
 	sf::IntRect btnCharactersRect(inGameExit.getPosition().x - inGameExit.getGlobalBounds().width / 2,
 		inGameExit.getPosition().y, inGameExit.getGlobalBounds().width, inGameExit.getGlobalBounds().height * 2);
-	if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) {
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+	if (btnCharactersRect.contains(sf::Mouse::getPosition(window)))
+	{
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
 			currentScreen = SCENE_GAME_MENU_SCREEN;
 		}
 		inGameExit.setFillColor(sf::Color(255, 255, 255));
-	} else {
+	}
+	else
+	{
 		inGameExit.setFillColor(sf::Color(198, 198, 198));
 	}
 	inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
@@ -1087,7 +1277,8 @@ void drawSelectLvl()
 	btnLvl.setLocation(150, 200);
 	btnLvl.setUnlocked(isLvlUnlocked(1));
 	btnLvl.drawBtn(window, "LVL 1", 30, font1);
-	if(btnLvl.btnClicked(window)) {
+	if(btnLvl.btnClicked(window)) 
+	{
 		gameLvl = 1;
 		currentScreen = SCENE_GAME_SCREEN;
 	}
@@ -1095,7 +1286,8 @@ void drawSelectLvl()
 	btnLvl.setLocation(250, 300);
 	btnLvl.setUnlocked(isLvlUnlocked(2));
 	btnLvl.drawBtn(window, "LVL 2", 30, font1);
-	if(btnLvl.btnClicked(window)) {
+	if(btnLvl.btnClicked(window))
+	{
 		gameLvl = 2;
 		currentScreen = SCENE_GAME_SCREEN;
 	}
@@ -1103,7 +1295,8 @@ void drawSelectLvl()
 	btnLvl.setLocation(350, 200);
 	btnLvl.setUnlocked(isLvlUnlocked(3));
 	btnLvl.drawBtn(window, "LVL 3", 30, font1);
-	if(btnLvl.btnClicked(window)) {
+	if(btnLvl.btnClicked(window))
+	{
 		gameLvl = 3;
 		currentScreen = SCENE_GAME_SCREEN;
 	}
@@ -1111,7 +1304,8 @@ void drawSelectLvl()
 	btnLvl.setLocation(450, 300);
 	btnLvl.setUnlocked(isLvlUnlocked(4));
 	btnLvl.drawBtn(window, "LVL 4", 30, font1);
-	if(btnLvl.btnClicked(window)) {
+	if(btnLvl.btnClicked(window))
+	{
 		gameLvl = 4;
 		currentScreen = SCENE_GAME_SCREEN;
 	}
@@ -1119,7 +1313,8 @@ void drawSelectLvl()
 	btnLvl.setLocation(550, 200);
 	btnLvl.setUnlocked(isLvlUnlocked(5));
 	btnLvl.drawBtn(window, "LVL 5", 30, font1);
-	if(btnLvl.btnClicked(window)) {
+	if(btnLvl.btnClicked(window))
+	{
 		gameLvl = 5;
 		currentScreen = SCENE_GAME_SCREEN;
 	}
@@ -1127,7 +1322,8 @@ void drawSelectLvl()
 	btnLvl.setLocation(650, 300);
 	btnLvl.setUnlocked(isLvlUnlocked(6));
 	btnLvl.drawBtn(window, "LVL 6", 30, font1);
-	if(btnLvl.btnClicked(window)) {
+	if(btnLvl.btnClicked(window))
+	{
 		gameLvl = 6;
 		currentScreen = SCENE_GAME_SCREEN;
 	}
@@ -1139,11 +1335,15 @@ void drawGameEvent()
 {
 	sf::RectangleShape gameEventsHolder;
 	float sec = inGameEvents.getElapsedTime().asSeconds();
-	if (sec < 3.0) {
-		if(inGameEventType == 1) {
+	if (sec < 3.0)
+	{
+		if(inGameEventType == 1)
+		{
 			speedIncreased.setString("Speed Increased!");
 			speedIncreased.setFillColor(sf::Color::White);
-		} else if(inGameEventType == 2) {
+		} 
+		else if(inGameEventType == 2) 
+		{
 			speedIncreased.setString("Level target reached!");
 			speedIncreased.setFillColor(sf::Color::Black);
 		}
@@ -1154,9 +1354,12 @@ void drawGameEvent()
 		gameEventsHolder.setOutlineColor(sf::Color(43, 43, 43, 200));
 		gameEventsHolder.setOutlineThickness(2);
 		gameEventsHolder.setSize(sf::Vector2f(speedIncreased.getLocalBounds().width + 30, speedIncreased.getLocalBounds().height  + 14));
-		if(inGameEventType == 1) {
+		if(inGameEventType == 1) 
+		{
 			gameEventsHolder.setFillColor(sf::Color(255,143,0, 200));
-		} else if(inGameEventType == 2) {
+		}
+		else if(inGameEventType == 2) 
+		{
 			gameEventsHolder.setFillColor(sf::Color(139,195,74, 220));
 		}
 		gameEventsHolder.setPosition(window.getSize().x / 2, 40);
@@ -1164,7 +1367,9 @@ void drawGameEvent()
 
 		window.draw(gameEventsHolder);
 		window.draw(speedIncreased);
-	} else {
+	} 
+	else
+	{
 		gameEvent = false;
 	}
 }
@@ -1184,12 +1389,16 @@ void drawHowToScreen()
 	inGameExit.setCharacterSize(26);
 	sf::IntRect btnCharactersRect(inGameExit.getPosition().x - inGameExit.getGlobalBounds().width / 2,
 		inGameExit.getPosition().y, inGameExit.getGlobalBounds().width, inGameExit.getGlobalBounds().height * 2);
-	if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) {
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+	if (btnCharactersRect.contains(sf::Mouse::getPosition(window)))
+	{
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
 			currentScreen = SCENE_GAME_MENU_SCREEN;
 		}
 		inGameExit.setFillColor(sf::Color(255, 255, 255));
-	} else {
+	} 
+	else
+	{
 		inGameExit.setFillColor(sf::Color(198, 198, 198));
 	}
 	inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
@@ -1225,23 +1434,29 @@ void drawOptionsScreen()
 	inGameExit.setCharacterSize(26);
 	sf::IntRect btnCharactersRect(inGameExit.getPosition().x - inGameExit.getGlobalBounds().width / 2,
 		inGameExit.getPosition().y, inGameExit.getGlobalBounds().width, inGameExit.getGlobalBounds().height * 2);
-	if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) {
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+	if (btnCharactersRect.contains(sf::Mouse::getPosition(window))) 
+	{
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+		{
 			currentScreen = SCENE_GAME_MENU_SCREEN;
 		}
 		inGameExit.setFillColor(sf::Color(255, 255, 255));
-	} else {
+	}
+	else 
+	{
 		inGameExit.setFillColor(sf::Color(198, 198, 198));
 	}
 	inGameExit.setOrigin(inGameExit.getGlobalBounds().width/2, 0);
 	window.draw(inGameExit);
 	
 	MD2 character;
-	for(int i=1; i<=5; i++) {
+	for(int i=1; i<=5; i++) 
+	{
 		int x = i*130 - 20;
 		int y = window.getSize().y / 2 - 100 + 100 * (i%2);
 
-		if(i == 1) {
+		if(i == 1)
+		{
 
 			characterBoy[0].setPosition(x + 25, y);
 			int originX = characterBoy[0].getGlobalBounds().width / 2;
@@ -1250,17 +1465,20 @@ void drawOptionsScreen()
 			characterBoy[0].setScale(0.3, 0.3);
 			window.draw(characterBoy[0]);
 
-			if(character.imgCLicked(window, characterBoy[0])) {
+			if(character.imgCLicked(window, characterBoy[0])) 
+			{
 				userCharacter = i;
 			}
 			
-			if(i == userCharacter) {
+			if(i == userCharacter) 
+			{
 				selectedCharacter.setPosition(x + 17, y + 130);
 				selectedCharacter.setSize(sf::Vector2f(70, 10));
 				window.draw(selectedCharacter);
 			}
 
-		} else if(i == 2) {
+		} else if(i == 2)
+		{
 
 			characterGirl[0].setPosition(x, y + 4);
 			int originX = characterGirl[0].getGlobalBounds().width / 2;
@@ -1269,17 +1487,21 @@ void drawOptionsScreen()
 			characterGirl[0].setScale(0.31, 0.31);
 			window.draw(characterGirl[0]);
 
-			if(character.imgCLicked(window, characterGirl[0])) {
+			if(character.imgCLicked(window, characterGirl[0])) 
+			{
 				userCharacter = i;
 			}
 			
-			if(i == userCharacter) {
+			if(i == userCharacter)
+			{
 				selectedCharacter.setPosition(x + 18, y + 130);
 				selectedCharacter.setSize(sf::Vector2f(70, 10));
 				window.draw(selectedCharacter);
 			}
 
-		} else if(i == 3) {
+		}
+		else if(i == 3) 
+		{
 
 			menuIdleKnight[0].setPosition(x, y - 13);
 			int originX = menuIdleKnight[0].getGlobalBounds().width / 2;
@@ -1288,17 +1510,21 @@ void drawOptionsScreen()
 			menuIdleKnight[0].setScale(0.24, 0.24);
 			window.draw(menuIdleKnight[0]);
 
-			if(character.imgCLicked(window, menuIdleKnight[0])) {
+			if(character.imgCLicked(window, menuIdleKnight[0])) 
+			{
 				userCharacter = i;
 			}
 			
-			if(i == userCharacter) {
+			if(i == userCharacter) 
+			{
 				selectedCharacter.setPosition(x - 10, y + 130);
 				selectedCharacter.setSize(sf::Vector2f(96, 10));
 				window.draw(selectedCharacter);
 			}
 
-		} else if(i == 4) {
+		}
+		else if(i == 4) 
+		{
 
 			characterJack[0].setPosition(x, y - 13);
 			int originX = characterJack[0].getGlobalBounds().width / 2;
@@ -1307,17 +1533,20 @@ void drawOptionsScreen()
 			characterJack[0].setScale(0.21, 0.21);
 			window.draw(characterJack[0]);
 
-			if(character.imgCLicked(window, characterJack[0])) {
+			if(character.imgCLicked(window, characterJack[0])) 
+			{
 				userCharacter = i;
 			}
 			
-			if(i == userCharacter) {
+			if(i == userCharacter) 
+			{
 				selectedCharacter.setPosition(x - 15, y + 130);
 				selectedCharacter.setSize(sf::Vector2f(95, 10));
 				window.draw(selectedCharacter);
 			}
 
-		} else if(i == 5) {
+		} else if(i == 5)
+		{
 
 			characterNinja[0].setPosition(x, y + 15);
 			int originX = characterNinja[0].getGlobalBounds().width / 2;
@@ -1326,11 +1555,13 @@ void drawOptionsScreen()
 			characterNinja[0].setScale(0.3, 0.3);
 			window.draw(characterNinja[0]);
 
-			if(character.imgCLicked(window, characterNinja[0])) {
+			if(character.imgCLicked(window, characterNinja[0])) 
+			{
 				userCharacter = i;
 			}
 
-			if(i == userCharacter) {
+			if(i == userCharacter)
+			{
 				selectedCharacter.setPosition(x - 16, y + 130);
 				selectedCharacter.setSize(sf::Vector2f(90, 10));
 				window.draw(selectedCharacter);
@@ -1352,7 +1583,8 @@ int main()
 	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
 	//initialise the array that contains each level target
-	for(int i=0; i<6; i++) {
+	for(int i=0; i<6; i++)
+	{
 		finishLvlScore[i] = 3500 + i*750;
 	}
 
@@ -1409,52 +1641,62 @@ int main()
 	//initialise the arrays that contains the images of different characters
 	//helps us to animate them
 	string boyCharacter = "idle_";
-	for(int i=0; i<15; i++) {
+	for(int i=0; i<15; i++)
+	{
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/boy/", boyCharacter + to_string(i + 1), "png"));
 		characterBoy[i] = characterIdle;
 	}
 	string girlCharacter = "idle_";
-	for(int i=0; i<16; i++) {
+	for(int i=0; i<16; i++)
+	{
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/girl/", girlCharacter + to_string(i + 1), "png"));
 		characterGirl[i] = characterIdle;
 	}
 	string jackCharacter = "idle_";
-	for(int i=0; i<10; i++) {
+	for(int i=0; i<10; i++)
+	{
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/jack/", jackCharacter + to_string(i + 1), "png"));
 		characterJack[i] = characterIdle;
 	}
 	string ninjaCharacter = "idle_";
-	for(int i=0; i<10; i++) {
+	for(int i=0; i<10; i++)
+	{
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/ninja/", ninjaCharacter + to_string(i + 1), "png"));
 		characterNinja[i] = characterIdle;
 	}
 	string menuWalkBoyStr = "walk_";
-	for(int i=0; i<15; i++) {
+	for(int i=0; i<15; i++) 
+	{
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/boy/", menuWalkBoyStr + to_string(i + 1), "png"));
 		menuWalkBoy[i] = characterIdle;
 	}
 	string menuWalkGirlStr = "walk_";
-	for(int i=0; i<20; i++) {
+	for(int i=0; i<20; i++)
+	{
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/girl/", menuWalkGirlStr + to_string(i + 1), "png"));
 		menuWalkGirl[i] = characterIdle;
 	}
 	string menuRunJackStr = "run_";
-	for(int i=0; i<8; i++) {
+	for(int i=0; i<8; i++) 
+	{
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/jack/", menuRunJackStr + to_string(i + 1), "png"));
 		menuRunJack[i] = characterIdle;
 	}
 	string menuSlideJackStr = "slide_";
-	for(int i=0; i<10; i++) {
+	for(int i=0; i<10; i++) 
+	{
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/jack/", menuSlideJackStr + to_string(i + 1), "png"));
 		menuSlideJack[i] = characterIdle;
 	}
 	string menuIdleKnightStr = "idle_";
-	for(int i=0; i<10; i++) {
+	for(int i=0; i<10; i++) 
+	{
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/knight/", menuIdleKnightStr + to_string(i + 1), "png"));
 		menuIdleKnight[i] = characterIdle;
 	}
 	string menuGlideNinjaStr = "glide_";
-	for(int i=0; i<10; i++) {
+	for(int i=0; i<10; i++) 
+	{
 		sf::Sprite characterIdle(zfSFML.loadSpriteFromTexture("Assets/characters/ninja/", menuGlideNinjaStr + to_string(i + 1), "png"));
 		menuGlideNinja[i] = characterIdle;
 	}
@@ -1479,46 +1721,71 @@ int main()
 		//the loop that checks for different inputs
         while (window.pollEvent(event))
         {
-			if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape) {
+			if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape)
+			{
                 window.close();
-			} else if(event.type == sf::Event::KeyPressed) {
-				if(currentScreen == SCENE_GAME_MENU_SCREEN) {
-					if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+			} 
+			else if(event.type == sf::Event::KeyPressed)
+			{
+				if(currentScreen == SCENE_GAME_MENU_SCREEN) 
+				{
+					if(sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+					{
 						currentScreen = SCENE_SELECT_LVL;
 						clockRefreshRate.restart();
-					} else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
+					} 
+					else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) 
+					{
 						currentScreen = SCENE_OPTIONS_SCREEN;
 						clockRefreshRate.restart();
 					}
-				} else if(currentScreen == SCENE_GAME_SCREEN  && !gameLost) {	
-					if (event.key.code == 71) {
+				} 
+				else if(currentScreen == SCENE_GAME_SCREEN  && !gameLost) 
+				{	
+					if (event.key.code == 71)
+					{
 						//left
 						spriteToRight = false;
-						if (characterY > 0) {
+						if (characterY > 0)
+						{
 							characterY--;
-						} else {
+						} 
+						else
+						{
 							characterY = levelColumns - 1;
 						}
-					} else if (event.key.code == 72) {
+					}
+					else if (event.key.code == 72) 
+					{
 						//right
 						spriteToRight = true;
-						if (characterY < levelColumns - 1) {
+						if (characterY < levelColumns - 1) 
+						{
 							characterY++;
-						} else {
+						}
+						else
+						{
 							characterY = 0;
 						}
-					} else if (event.key.code == 73 && !showMenu && menuSquares == 0) {
+					} 
+					else if (event.key.code == 73 && !showMenu && menuSquares == 0)
+					{
 						//up
 						int noBalls = ballsInHandNo;
 						ballsStreak = ballsInHandNo >=3;
 						throwBalls(gameGrid, characterY, levelLines);
 						int ballX = getBallX(gameGrid, characterY, levelLines);
 						markBalls(gameGrid, levelLines, levelColumns, characterY, ballX, ballsStreak);
-					} else if (event.key.code == 74 && !showMenu && menuSquares == 0) {
+					}
+					else if (event.key.code == 74 && !showMenu && menuSquares == 0)
+					{
 						//down
 						getBalls(gameGrid, characterY, levelLines);
-					} else if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
-						if(menuSquares == 0) {
+					}
+					else if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)) 
+					{
+						if(menuSquares == 0)
+						{
 							menuSquares = 0;
 							showMenu = true;
 						}
@@ -1554,10 +1821,13 @@ int main()
 				currentScreen = SCENE_GAME_MENU_SCREEN;
 				clockRefreshRate.restart();
 			}
-		} else if(currentScreen == SCENE_GAME_SCREEN) {
+		}
+		else if(currentScreen == SCENE_GAME_SCREEN) 
+		{
 
 			window.draw(backgroundSprite);
-			if (!gameGridGenerated) {
+			if (!gameGridGenerated)
+			{
 
 				//the game lvl was just created so we need to initiate all the things that helps us to draw the game lvl
 				gameGridGenerated = true;
@@ -1574,41 +1844,59 @@ int main()
 				inGameClock.restart();
 				menuSquares = levelColumns * levelLines;
 				gridGeneratedEffectShow = true;
-				if(lvlUnlocked == gameLvl) {
+				if(lvlUnlocked == gameLvl) 
+				{
 					lvlTargetHit = false;
-				} else {
+				} 
+				else 
+				{
 					lvlTargetHit = true;
 				}
 
-			} else {
+			}
+			else 
+			{
 
 				//set the 'x' seconds - the seconds that represents wehn to add a new row
 				int sec = (int) inGameClock.getElapsedTime().asSeconds();
-				if(lvlScore < 1000) {
+				if(lvlScore < 1000)
+				{
 					rangeSec = 7 + gameLvl;
-				} else if(lvlScore < 2500) {
-					if(rangeSec > 6 + gameLvl) {
+				} 
+				else if(lvlScore < 2500)
+				{
+					if(rangeSec > 6 + gameLvl)
+					{
 						inGameEvents.restart();
 						gameEvent = true;
 						inGameEventType = 1;
 					}
 					rangeSec = 6 + gameLvl;
-				} else if(lvlScore < 6250) {
-					if(rangeSec > 5 + gameLvl) {
+				}
+				else if(lvlScore < 6250)
+				{
+					if(rangeSec > 5 + gameLvl)
+					{
 						inGameEvents.restart();
 						gameEvent = true;
 						inGameEventType = 1;
 					}
 					rangeSec = 5 + gameLvl;
-				} else if(lvlScore < 9000) {
-					if(rangeSec > 4 + gameLvl) {
+				} 
+				else if(lvlScore < 9000) 
+				{
+					if(rangeSec > 4 + gameLvl) 
+					{
 						inGameEvents.restart();
 						gameEvent = true;
 						inGameEventType = 1;
 					}
 					rangeSec = 4 + gameLvl;
-				} else {
-					if(rangeSec > 3 + gameLvl) {
+				} 
+				else 
+				{
+					if(rangeSec > 3 + gameLvl)
+					{
 						inGameEvents.restart();
 						gameEvent = true;
 						inGameEventType = 1;
@@ -1617,25 +1905,35 @@ int main()
 				}
 
 				//add a new row
-				if(sec % rangeSec == 0 && !rowGenerated) {
-					if(!gameLost && menuSquares == 0) {
+				if(sec % rangeSec == 0 && !rowGenerated) 
+				{
+					if(!gameLost && menuSquares == 0)
+					{
 						addRow(gameGrid, levelLines, levelColumns);
 					}
 					rowGenerated = true;
-				} else if (sec % rangeSec == rangeSec - 1) {
+				} 
+				else if (sec % rangeSec == rangeSec - 1)
+				{
 					inGameClock.restart();
 					rowGenerated = false;
 				}
 
 				//check if the game is lost and change the color of the game holder
-				if(gameLost)  {
-					if(lvlTargetHit && lvlScore > finishLvlScore[gameLvl - 1]) {
+				if(gameLost)
+				{
+					if(lvlTargetHit && lvlScore > finishLvlScore[gameLvl - 1])
+					{
 						gameHolder.setOutlineColor(gameWonColors[gameLostLines]);
-					} else {
+					}
+					else
+					{
 						gameHolder.setOutlineColor(gameLostColors[gameLostLines]);
 					}
 					gameHolder.setFillColor(sf::Color(236, 35, 35, 70));
-				} else {
+				} 
+				else
+				{
 					gameHolder.setOutlineColor(sf::Color(43, 43, 43, 255));
 					gameHolder.setFillColor(sf::Color(135, 43, 240, 70));
 				}
@@ -1644,9 +1942,12 @@ int main()
 				window.draw(gameHolder); //draw the game holder
 
 				//draw game pieces
-				for(int i=0; i<levelLines; i++) {
-					for(int j=0; j<levelColumns; j++) {
-						if(gameGrid[i][j] != 0) {
+				for(int i=0; i<levelLines; i++) 
+				{
+					for(int j=0; j<levelColumns; j++)
+					{
+						if(gameGrid[i][j] != 0)
+						{
 							int ballType = gameGrid[i][j]; //get the ball type
 							ballSprite.setColor(gameBallColors[ballType - 1]); //set the ball color
 							ballSprite.setPosition(objectSize*j + (window.getSize().x/2 - objectSize*levelColumns/2), objectSize*i + 10); //set ball position
@@ -1659,26 +1960,35 @@ int main()
 				if(!gameLost && menuSquares == 0) drawPointers(characterX, characterY, gameGrid);
 
 				//draw different screens in game
-				if(gameLost) {
+				if(gameLost)
+				{
 					drawGameLost();
-				} else {
-					if(showMenu) {
+				} 
+				else
+				{
+					if(showMenu) 
+					{
 						drawInGameMenu();
-					} else {
+					}
+					else 
+					{
 						hideInGameMenu();
 					}
 				}
 
 				//check if at least one ball is on the last row - game ends
-				if(checkGameLost(gameGrid, levelLines, levelColumns) && !gameLost) {
-					if(lvlScore >= finishLvlScore[gameLvl - 1] && lvlUnlocked<=gameLvl) {
+				if(checkGameLost(gameGrid, levelLines, levelColumns) && !gameLost) 
+				{
+					if(lvlScore >= finishLvlScore[gameLvl - 1] && lvlUnlocked<=gameLvl) 
+					{
 						lvlUnlocked = gameLvl + 1;
 					}
 					gameLostLines = 0;
 					clockGameMenu.restart();
 					gameLost = true;
 				}
-				if(lvlScore >= finishLvlScore[gameLvl - 1] && !lvlTargetHit) {
+				if(lvlScore >= finishLvlScore[gameLvl - 1] && !lvlTargetHit) 
+				{
 					lvlTargetHit = true;
 					inGameEvents.restart();
 					gameEvent = true;
@@ -1697,7 +2007,8 @@ int main()
 				if(!gameLost) window.draw(portal);
 
 				//show the score if there is no in-game menu
-				if(menuSquares == 0 && !gameLost) {
+				if(menuSquares == 0 && !gameLost)
+				{
 					scoreText.setString("Score:");
 					scoreText.setPosition(objectSize*levelColumns + 50 + (window.getSize().x/2 - objectSize*levelColumns/2), 10);
 					scoreText.setCharacterSize(20);
@@ -1713,30 +2024,39 @@ int main()
 				}
 
 				//draw the game event (in-game notification)
-				if(gameEvent) {
+				if(gameEvent)
+				{
 					drawGameEvent();
 				}
 
 			}
-		} else if(currentScreen == SCENE_GAME_MENU_SCREEN) {
+		}
+		else if(currentScreen == SCENE_GAME_MENU_SCREEN) 
+		{
 			
 			//draw the game menu screen
 			window.draw(bgMenu);
 			drawGameMenuBg();
 			drawGameMenu();
 
-		} else if(currentScreen == SCENE_OPTIONS_SCREEN) {
+		} 
+		else if(currentScreen == SCENE_OPTIONS_SCREEN) 
+		{
 
 			//draw the screen that contains all the characters
 			drawOptionsScreen();
 
-		} else if(currentScreen == SCENE_SELECT_LVL) {
+		} 
+		else if(currentScreen == SCENE_SELECT_LVL) 
+		{
 
 			//draw the screen that contains all the levels
 			//from here we can choose which level we want to play
 			drawSelectLvl();
 
-		} else if(currentScreen == SCENE_HOW_TO_SCREEN) {
+		} 
+		else if(currentScreen == SCENE_HOW_TO_SCREEN) 
+		{
 
 			//draw the screen that contains the 'how to' about the game
 			drawHowToScreen();
