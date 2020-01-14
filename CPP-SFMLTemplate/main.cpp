@@ -23,7 +23,7 @@ const int SCENE_SELECT_LVL = 4;
 const int SCENE_HOW_TO_SCREEN = 5;
 const int objectSize = 35; //the ball size
 int currentScreen = SCENE_SPLASH_SCREEN; //the current screen
-int lvlUnlocked = 10; //variable that store the number of unlocked levels
+int lvlUnlocked = 1; //variable that store the number of unlocked levels
 int gameLvl; //variable that store the current level
 int inGameEventType = 1; //variable storing the type of notification that appear in game
 int userCharacter = 1; //here we store the character that the user choose (by default is the first character - the boy)
