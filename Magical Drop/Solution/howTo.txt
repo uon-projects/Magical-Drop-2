@@ -1,0 +1,20 @@
+Instructions:
+- the main character can move only to the left or right using the left or right arrow;
+- if you want to take a ball in hands you need to press the bottom arrow key and if you want to drop the ball you need to press the top
+arrow key;
+
+Rules:
+- if you reach the boundaries of the board with the player you can teleport to the other side;
+- you can have in hand the same type of balls - the same color (for instance if you alrady took a red ball
+you can not take a pink ball until you drop the red one);
+- you can have as many balls as you want in your hand;
+
+Playable Characters:
+- you can select your character from the entire list of characters (no need to unlock)
+
+Level Rules:
+- you can pass a level if you reach that level target score;
+- you can play only the unlocked levels;
+
+In game fast keys:
+- if you want to puase the game while you are playing you can press 'P' key from keyboard
